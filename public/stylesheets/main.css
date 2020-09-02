@@ -1,0 +1,14 @@
+body{
+    font-family: 'Lexend Peta', sans-serif;
+}
+
+/* TABLE */
+table{
+    width: 60%;
+    border: 2px solid purple;
+}
+
+/* ADD WORK FORM */
+div[class=d-none] {
+    background-color: yellow;
+}
