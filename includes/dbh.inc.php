@@ -7,6 +7,7 @@ $dbName = "time_report";
 
 $conn = mysqli_connect($dbServerName, $dbUsername, $dbPassword, $dbName);
 
+/* 
 $sqlCustomer = "SELECT * FROM customers;";
 $sqlCustomerResult = mysqli_query($conn, $sqlCustomer);
 $sqlCustomerResultCheck = mysqli_num_rows($sqlCustomerResult);
@@ -35,4 +36,5 @@ if($sqlWorksResultCheck > 0) {
     while ($row = mysqli_fetch_assoc($sqlWorklistsResult)) {
         $worklists[] = $row;
     }
-}
+} 
+*/

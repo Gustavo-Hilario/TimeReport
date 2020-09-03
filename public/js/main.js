@@ -1,13 +1,46 @@
 $( document ).ready(function() {
     $('#newCustomerButton').click(function(){
-        $('#addNewCustomerForm').toggleClass("d-none");
+        $('#addNewCustomerDiv').toggleClass("d-none");
     });
 
-    $('.addWorkButton').click(function(){
+    // Add Customer Form AJAX
+    $('#addNewCustomerForm').submit(function(e){
+        e.preventDefault();
+        var customer_name = $('#addNewCustomerForm #name').val();
+        $.ajax({
+            url: 'newCustomer.php',
+            method: 'POST',
+            data: {customerName: customer_name},
+            dataType: 'json'
+        }).done(function(result){
+            $('#addNewCustomerForm #name').val('');
+            console.log(result);
+        });
+    });
+
+    // GET CUSTOMER_ID FROM TABLE BUTTONS
+    $('.tableButtonsForm').submit(function(e){
+        e.preventDefault();
+        var customer_id = $(this).attr('customer_id');
         console.log($(this).attr('customer_id'));
-        $('#addWorkForm select').css("background-color", "yellow");
-        $('#addWorkForm select').attr('customer_id', $(this).attr('customer_id'));
-        $('#addWorkForm').toggleClass("d-none");
+        $.ajax({
+            url: 'customerID.php',
+            method: 'GET',
+            data: {customerID: customer_id},
+            dataType: 'json'
+        }).done(function(result){
+            console.log(result);
+        });
     });
-
 });
+
+function getCustomers(){
+    $.ajax({
+        url: 'getCustomers.php',
+        method: 'GET',
+        dataType: 'json'
+    }).done(function(result){
+    });
+}
+
+getCustomers();

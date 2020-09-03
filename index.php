@@ -45,7 +45,9 @@
                         <td><?php echo $customer['customer_id'] ?></td>
                         <td><?php echo $customer['customer_name'] ?></td>
                         <td>
-                            <span class="addWorkButton" customer_id="<?php echo $customer['customer_id']; ?>">
+
+                        <form action="" class="tableButtonsForm d-inline-block" customer_id="<?php echo $customer['customer_id'] ?>">
+                            <button class="addWorkButton">
                                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="24" width="24" x="0px" y="0px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
                                     <g>
                                         <rect x="76" y="14.9" fill="#F5F0E1" width="48" height="6.4"/>
@@ -77,9 +79,9 @@
                                             C124,94.7,122.9,98,121.2,101.2z"/>
                                     </g>
                                 </svg>
-                            </span>
-                            
-                            <span class="worklist">
+                            </button>
+
+                            <button class="worklist">
                                 <svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="24" width="24" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
                                     <g transform="translate(0 -1028.4)">
                                     <path d="m3 1035.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#16a085"/>
@@ -92,9 +94,9 @@
                                     <rect height="1" width="5" y="1047.4" x="7" fill="#c0392b"/>
                                     </g>
                                 </svg>
-                            </span>
+                            </button>
                             
-                            <span class="customerReport">
+                            <button class="customerReport">
                                 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 128 128">
                                     <defs><style>.cls-1{fill:#2d3e50;}.cls-2{fill:#2e79bd;}</style></defs>
                                     <title>b</title>
@@ -104,8 +106,9 @@
                                     <path class="cls-1" d="M110.14729,35.7358,99.15817,46.72493v71.95864a2.49474,2.49474,0,0,0,2.49109,2.49111h17.26781a2.49477,2.49477,0,0,0,2.49111-2.49111v-83.429a17.95629,17.95629,0,0,1-11.26088.48124Z"/>
                                     <path class="cls-2" d="M115.045,6.82533a11.60217,11.60217,0,0,0-9.725,17.94326l-18.96395,18.964a11.5781,11.5781,0,0,0-12.86295.13029L60.81946,31.18721a11.61122,11.61122,0,1,0-19.45139-.00064L19.28566,53.59035A11.62772,11.62772,0,1,0,22.67974,56.984l22.082-22.40314a11.572,11.572,0,0,0,12.6643,0L70.16978,47.32633a11.61164,11.61164,0,1,0,19.58-.1997l18.9646-18.9646A11.60839,11.60839,0,1,0,115.045,6.82533Z"/>
                                 </svg>
-                            </span>
-                            
+                            </button>
+                        </form>
+
                         </td>
                         <td>Hour Total</td>
                     </tr>
@@ -121,9 +124,9 @@
         </div>
 
         <!-- ADD NEW CUSTOMER FORM -->
-        <div id="addNewCustomerForm" class="d-none">
+        <div id="addNewCustomerDiv" class="d-none">
             <div class="w-50 d-flex justify-content-around mx-auto mt-4">
-                <form action="" class="w-100 mt-5">
+                <form action="/newCustomer" method="POST" class="w-100 mt-5" id="addNewCustomerForm">
                     <fieldset class="border border-primary">
                         <legend class="ml-5 w-auto">Group Name</legend>
 
@@ -133,12 +136,13 @@
                         </div>
                         
                         <div class="d-flex justify-content-center align-items-center my-3">
-                            <button class="btn btn-sm btn-outline-success">Add New Customer</button>
+                            <button type="submit" class="btn btn-sm btn-outline-success">Add New Customer</button>
                         </div>
                     </fieldset>
                 </form>
             </div>
         </div>
+
 
         <!-- ADD WORK FORM -->
         <div id="addWorkForm" class="d-none">
@@ -153,11 +157,16 @@
                             <label for="worked_time" class="mr-2">Worked Time in Minutes</label>
                             <input type="number" id="worked_time" name="worked_time" placeholder="60">
                         </div>
-
-                        <select name="" id="">
-                            <option value="A">A</option>
-                            <option value="B">B</option>
+                        
+                        <select name="SELECT" id="">
+                            <?php foreach ($worklists as $key => $worklist): ?>
+                                <?php if($worklist['customer_id'] == $CUSTOMER_ID):?>
+                                    <option value="{$worklist['worklist_name']}"><?php echo $worklist['worklist_name'] ?></option>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
                         </select>
+                        
+                        
                         
                         <div class="d-flex justify-content-center align-items-center my-3">
                             <button class="btn btn-sm btn-outline-success">Add Work</button>
@@ -166,8 +175,6 @@
                 </form>
             </div>
         </div>
-       
-    </div>
 
     <!-- TABLE OF WORKS-->
     <div class="container mt-5 d-none">
@@ -218,6 +225,14 @@
             </table>
         </div>
     </div>
+
+    <?php if (isset($customerWorklist)): ?>
+        <p><?php echo 'INSIDE WORKLIST'; ?></p>
+        <?php foreach ($customerWorklist as $key => $worklist): ?>
+            <p><?php echo $worklist['worklist_name'] ?></p>             
+        <?php endforeach; ?>
+    <?php endif; ?>
+    
     
     <!-- My JS -->
     <script type="text/javascript" src="./public/js/main.js"></script>
