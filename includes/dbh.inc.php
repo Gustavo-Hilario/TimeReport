@@ -5,7 +5,7 @@ $dbUsername = "root";
 $dbPassword = "";
 $dbName = "time_report";
 
-$conn = mysqli_connect($dbServerName, $dbUsername, $dbPassword, $dbName);
+$mysqli = mysqli_connect($dbServerName, $dbUsername, $dbPassword, $dbName) or die(mysqli_error($mysqli));
 
 /* 
 $sqlCustomer = "SELECT * FROM customers;";

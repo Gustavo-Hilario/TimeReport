@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+/* $( document ).ready(function() {
     $('#newCustomerButton').click(function(){
         $('#addNewCustomerDiv').toggleClass("d-none");
     });
@@ -43,4 +43,4 @@ function getCustomers(){
     });
 }
 
-getCustomers();
+getCustomers(); */
