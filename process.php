@@ -22,3 +22,14 @@
         header('Location: index.php');
     }
 
+    if(isset($_POST['saveNewToWorklist'])){
+        $worklist_name = $_POST['worklist_name'];
+        $customer_id = $_POST['customer_id'];
+        $worklist_total_minutes = $_POST['worklist_total_minutes'];
+        $worklist_active = $_POST['worklist_active'];
+        $mysqli->query("INSERT INTO worklist (worklist_name, customer_id, worklist_total_minutes, worklist_active) 
+                        VALUES ('$worklist_name', '$customer_id' , '$worklist_total_minutes', '$worklist_active')") 
+                        or die($mysqli->error);
+        header('Location: index.php');
+    }
+

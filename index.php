@@ -1,8 +1,7 @@
 <?php
     include_once 'includes/dbh.inc.php';
-    require 'process.php';
+    include_once 'process.php';
 ?> 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,21 +11,18 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-    <!-- JQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    
     <!-- GoogleFonts -->
     <link href="https://fonts.googleapis.com/css2?family=Lexend+Peta&display=swap" rel="stylesheet">
 
     <!-- My CSS -->
     <link rel="stylesheet" href="./public/stylesheets/main.css">
 
-    
     <title>Time Report HomePage</title>
 </head>
 <body>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
@@ -127,8 +123,8 @@
         </div>
 
         <!-- ADD NEW CUSTOMER FORM -->
-        <div id="addNewCustomerDiv" class="">
-           
+        <div id="addNewCustomerDiv" class="d-none">
+            
             <div class="w-50 d-flex justify-content-around mx-auto mt-4">
                 <form action="process.php" method="POST" class="w-100 mt-5" id="addNewCustomerForm">
                     <fieldset class="border border-primary">
@@ -148,39 +144,39 @@
         </div>
 
         <!-- ADD WORK FORM -->
-        <div id="addWorkForm" class="">
+        <?php if(isset($_GET['addWork'])): ?>
             <?php
-                if(isset($_GET['addWork'])){
-                    $customer_id = $_GET['addWork'];
-                    $sql = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
-                    $sqlResult = mysqli_query($mysqli, $sql);
-                }
+                $customer_id = $_GET['addWork'];
+                $sqlAddWork = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
+                $sqlAddWorkResult = mysqli_query($mysqli, $sqlAddWork);
             ?>
-            <div class="w-50 d-flex justify-content-around mx-auto mt-4">
-                <form action="process.php" method="POST" class="w-100 mt-5">
-                    <fieldset class="border border-primary">
-                        <legend class="ml-5 w-auto">Add Work</legend>
+            <div id="addWorkForm" class="">
+                <div class="w-50 d-flex justify-content-around mx-auto mt-4">
+                    <form action="process.php" method="POST" class="w-100 mt-5">
+                        <fieldset class="border border-primary">
+                            <legend class="ml-5 w-auto">Add Work</legend>
 
-                        <div class="text-center">
-                            <label for="work_date" class="mr-2">Date</label>
-                            <input type="text" id="work_date" name="work_date" placeholder="2020-20-02">
-                            <label for="work_minutes" class="mr-2">Worked Time in Minutes</label>
-                            <input type="number" id="work_minutes" name="work_minutes" placeholder="60">
-                        </div>
-                        
-                        <select name="worklistID" required>
-                            <?php while ($worklist = mysqli_fetch_assoc($sqlResult)): ?>
-                                <option value="<?php echo $worklist['worklist_id'] ?>"><?php echo $worklist['worklist_name'] ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                        
-                        <div class="d-flex justify-content-center align-items-center my-3">
-                            <button type="submit" class="btn btn-sm btn-outline-success" name="saveNewWork">Add Work</button>
-                        </div>
-                    </fieldset>
-                </form>
+                            <div class="text-center">
+                                <label for="work_date" class="mr-2">Date</label>
+                                <input type="text" id="work_date" name="work_date" placeholder="2020-20-02">
+                                <label for="work_minutes" class="mr-2">Worked Time in Minutes</label>
+                                <input type="number" id="work_minutes" name="work_minutes" placeholder="60">
+                            </div>
+                            
+                            <select name="worklistID" required>
+                                <?php while ($worklist = mysqli_fetch_assoc($sqlAddWorkResult)): ?>
+                                    <option value="<?php echo $worklist['worklist_id'] ?>"><?php echo $worklist['worklist_name'] ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                            
+                            <div class="d-flex justify-content-center align-items-center my-3">
+                                <button type="submit" class="btn btn-sm btn-outline-success" name="saveNewWork">Add Work</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
             </div>
-        </div>
+        <?php endif; ?> 
 
         <!-- TABLE OF WORKS-->
         <div class="container mt-5 d-none">
@@ -206,45 +202,100 @@
             </div>
         </div>
 
-    <!-- TABLE OF WORKLIST-->
-    <div class="container mt-5">
-        <?php
-            if(isset($_GET['addWork'])){
-                $customer_id = $_GET['addWork'];
-                $sql = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
-                $sqlResult = mysqli_query($mysqli, $sql);
-            }
-        ?>
-        <?php
-            if(isset($_GET['worklist'])){
+        <!-- TABLE OF WORKLIST-->
+        <?php if(isset($_GET['worklist'])): ?>
+            <?php 
                 $customer_id = $_GET['worklist'];
-                $sql = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
-                $sqlResult = mysqli_query($mysqli, $sql);
-            }
-        ?>
-        <div class="w-100 d-flex justify-content-center">
-            <table class="text-center border bg-dark text-white">
-                <tr>
-                    <th>Worklist ID</th>
-                    <th>Worklist Name</th>
-                    <th>Customer ID</th>
-                    <th>WorkList Total Minutes</th>
-                    <th>Worklist Active</th>
-                </tr>
 
-                    <?php while ($worklist = mysqli_fetch_assoc($sqlResult)): ?>
-                        <tr>
-                            <td><?php echo $worklist['worklist_id'] ?></td>
-                            <td><?php echo $worklist['worklist_name'] ?></td>
-                            <td><?php echo $worklist['customer_id'] ?></td>
-                            <td><?php echo $worklist['worklist_total_minutes'] ?></td>
-                            <td><?php echo $worklist['worklist_active'] ?></td>
-                        </tr>
-                    <?php endwhile; ?>
-                    
-            </table>
-        </div>
-    </div>    
+                $sqlWorklist = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
+                $sqlWorklistResult = mysqli_query($mysqli, $sqlWorklist);
+                $sqlWorklistResultCheck = mysqli_num_rows($sqlWorklistResult);
+
+                $sqlWorklistView = "SELECT * FROM worklist_sums WHERE customer_id=$customer_id;";
+                $sqlWorklistViewResult = mysqli_query($mysqli, $sqlWorklistView);
+            ?>
+
+                <div class="w-auto d-flex flex-column justify-content-center my-5">
+                    <?php if($sqlWorklistResultCheck): ?>
+                        <div class="d-flex justify-content-center">
+                            <table class="text-center border bg-dark text-white">
+                                <tr>
+                                    <th>Worklist ID</th>
+                                    <th>Worklist Name</th>
+                                    <th>Total Hours</th>
+                                    <th>Worked Hours</th>
+                                    <th>Available Hours</th>
+                                    <th>Active (Y/N)</th>
+                                </tr>
+
+                                <?php while ($row = mysqli_fetch_assoc($sqlWorklistResult)){
+                                        $worklist[] = $row;
+                                    };
+                                ?>
+
+                                <?php while ($row = mysqli_fetch_assoc($sqlWorklistViewResult)){
+                                        $worklistView[] = $row;
+                                    };
+                                ?>
+                                    
+                                <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                    <tr>
+                                        <td><?php echo $worklist[$i]['worklist_id'] ?></td>
+                                        <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                        <td><?php echo $worklist[$i]['worklist_total_minutes'] ?></td>
+
+                                        <?php if(isset($worklistView)): ?>
+                                            <td><?php echo $worklistView[$i]['worklist_worked_minutes'] ?></td>
+                                            <td><?php echo $worklistView[$i]['worklist_remaining_minutes'] ?></td>
+                                            <?php else:?>
+                                                <td><?php echo '-'; ?></td>
+                                                <td><?php echo '-'; ?></td>
+                                        <?php endif; ?>
+                                        
+                                        <td><?php echo $worklist[$i]['worklist_active'] ?></td>
+                                    </tr>
+                                <?php endfor; ?>
+                            </table>
+                        </div> 
+                    <?php endif; ?>
+
+
+                    <div class="d-flex justify-content-center mt-4">
+                        <button class="btn btn-sm btn-outline-success" id="addWorkButton">Add Work</button>
+                    </div>
+
+                    <div class="d-none" id="addWorkDiv">
+                        <div class="d-flex justify-content-center mt-4">
+                            <form action="process.php" method="POST">
+                                <fieldset class="border border-primary px-3">
+                                    <legend class="ml-5 w-auto">New Work</legend>
+
+                                    <input type="hidden" name="customer_id" value="<?php echo $_GET['worklist'] ?>">
+
+                                    <div class="form-group">
+                                        <label for="worklist_name">Work Name</label>
+                                        <input type="text" id="worklist_name" name="worklist_name">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="worklist_total_minutes">Total Hours</label>
+                                        <input type="number" id="worklist_total_minutes" name="worklist_total_minutes">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="worklist_active">Active</label>
+                                        <input type="number" id="worklist_active" name="worklist_active>
+                                    </div>
+
+                                    <div class="form-group text-center">
+                                        <button type="submit" class="btn btn-sm btn-outline-success" id="addWorkButton" name="saveNewToWorklist">Add Work</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        <?php endif; ?>    
     
     <!-- My JS -->
     <script type="text/javascript" src="./public/js/main.js"></script>
