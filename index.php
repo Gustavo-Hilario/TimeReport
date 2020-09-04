@@ -165,7 +165,9 @@
                             
                             <select name="worklistID" required>
                                 <?php while ($worklist = mysqli_fetch_assoc($sqlAddWorkResult)): ?>
-                                    <option value="<?php echo $worklist['worklist_id'] ?>"><?php echo $worklist['worklist_name'] ?></option>
+                                    <?php if($worklist['worklist_active'] == 1): ?>
+                                        <option value="<?php echo $worklist['worklist_id'] ?>"><?php echo $worklist['worklist_name'] ?></option>
+                                    <?php endif; ?>
                                 <?php endwhile; ?>
                             </select>
                             
@@ -224,116 +226,114 @@
                 $totals_active_available = 0;
             ?>
 
-                <div class="w-auto d-flex flex-column justify-content-center my-5">
-                    <?php if($sqlWorklistResultCheck): ?>
-                        <div class="d-flex justify-content-center">
-                            <table class="text-center border bg-dark text-white">
+            <div class="w-auto d-flex flex-column justify-content-center my-5">
+                <?php if($sqlWorklistResultCheck): ?>
+                    <div class="d-flex justify-content-center">
+                        <table class="text-center border bg-dark text-white">
+                            <tr>
+                                <th>Worklist ID</th>
+                                <th>Worklist Name</th>
+                                <th>Total Hours</th>
+                                <th>Worked Hours</th>
+                                <th>Available Hours</th>
+                                <th>Active (Y/N)</th>
+                            </tr>
+
+                            <?php 
+                                while ($row = mysqli_fetch_assoc($sqlWorklistResult)){
+                                    $worklist[] = $row;
+                                };
+                                while ($row = mysqli_fetch_assoc($sqlWorklistViewResult)){
+                                    $worklistView[] = $row;
+                                };
+                            ?>
+                                
+                            <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                
                                 <tr>
-                                    <th>Worklist ID</th>
-                                    <th>Worklist Name</th>
-                                    <th>Total Hours</th>
-                                    <th>Worked Hours</th>
-                                    <th>Available Hours</th>
-                                    <th>Active (Y/N)</th>
+                                    <td><?php echo $worklist[$i]['worklist_id'] ?></td>
+                                    <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                    <td><?php echo $worklist[$i]['worklist_total_minutes'] ?></td>
+
+                                    <?php if(isset($worklistView[$i])): ?>
+                                        <td><?php echo $worklistView[$i]['worklist_worked_minutes'] ?></td>
+                                        <td><?php echo $worklistView[$i]['worklist_remaining_minutes'] ?></td>
+
+                                        <?php
+                                            $totals_hours += $worklist[$i]['worklist_total_minutes']; 
+                                            $totals_worked += $worklistView[$i]['worklist_worked_minutes']; 
+                                            $totals_available += $worklistView[$i]['worklist_remaining_minutes'];
+                                            
+                                            if($worklist[$i]['worklist_active'] == 1){
+                                                $totals_active_hours += $worklist[$i]['worklist_total_minutes']; 
+                                                $totals_active_worked += $worklistView[$i]['worklist_worked_minutes']; 
+                                                $totals_active_available += $worklistView[$i]['worklist_remaining_minutes'];
+                                            }
+                                        ?>
+
+                                        <?php else:?>
+                                            <td colspan="2"><?php echo 'ADD WORK'; ?></td>
+                                    <?php endif; ?>
+
+                                    <td><?php echo $worklist[$i]['worklist_active'] ?></td>
                                 </tr>
+                            <?php endfor; ?>
 
-                                <?php while ($row = mysqli_fetch_assoc($sqlWorklistResult)){
-                                        $worklist[] = $row;
-                                    };
-                                ?>
+                            <tr>
+                                <td colspan="2">TOTALS</td>
+                                <td><?php echo $totals_hours; ?></td>
+                                <td><?php echo $totals_worked; ?></td>
+                                <td><?php echo $totals_available; ?></td>
+                                <td>ALL</td>
+                            </tr>
 
-                                <?php while ($row = mysqli_fetch_assoc($sqlWorklistViewResult)){
-                                        $worklistView[] = $row;
-                                    };
-                                ?>
-                                    
-                                <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
-                                    
-                                    <tr>
-                                        <td><?php echo $worklist[$i]['worklist_id'] ?></td>
-                                        <td><?php echo $worklist[$i]['worklist_name'] ?></td>
-                                        <td><?php echo $worklist[$i]['worklist_total_minutes'] ?></td>
-
-                                        <?php if(isset($worklistView[$i])): ?>
-                                            <td><?php echo $worklistView[$i]['worklist_worked_minutes'] ?></td>
-                                            <td><?php echo $worklistView[$i]['worklist_remaining_minutes'] ?></td>
-
-                                            <?php
-                                                $totals_hours += $worklist[$i]['worklist_total_minutes']; 
-                                                $totals_worked += $worklistView[$i]['worklist_worked_minutes']; 
-                                                $totals_available += $worklistView[$i]['worklist_remaining_minutes'];
-                                                
-                                                if($worklist[$i]['worklist_active'] == 1){
-                                                    $totals_active_hours += $worklist[$i]['worklist_total_minutes']; 
-                                                    $totals_active_worked += $worklistView[$i]['worklist_worked_minutes']; 
-                                                    $totals_active_available += $worklistView[$i]['worklist_remaining_minutes'];
-                                                }
-                                            ?>
-
-                                            <?php else:?>
-                                                <td><?php echo '-'; ?></td>
-                                                <td><?php echo '-'; ?></td>
-                                        <?php endif; ?>
-
-                                        <td><?php echo $worklist[$i]['worklist_active'] ?></td>
-                                    </tr>
-                                <?php endfor; ?>
-
-                                <tr>
-                                    <td colspan="2">TOTALS</td>
-                                    <td><?php echo $totals_hours; ?></td>
-                                    <td><?php echo $totals_worked; ?></td>
-                                    <td><?php echo $totals_available; ?></td>
-                                    <td>ALL</td>
-                                </tr>
-
-                                <tr>
-                                    <td colspan="2">TOTALS ACTIVE</td>
-                                    <td><?php echo $totals_active_hours; ?></td>
-                                    <td><?php echo $totals_active_worked; ?></td>
-                                    <td><?php echo $totals_active_available; ?></td>
-                                    <td>ACTIVE</td>
-                                </tr>
-                            </table>
-                        </div> 
-                    <?php endif; ?>
+                            <tr>
+                                <td colspan="2">TOTALS ACTIVE</td>
+                                <td><?php echo $totals_active_hours; ?></td>
+                                <td><?php echo $totals_active_worked; ?></td>
+                                <td><?php echo $totals_active_available; ?></td>
+                                <td>ACTIVE</td>
+                            </tr>
+                        </table>
+                    </div> 
+                <?php endif; ?>
 
 
+                <div class="d-flex justify-content-center mt-4">
+                    <button class="btn btn-sm btn-outline-success" id="addWorkButton">Add Work</button>
+                </div>
+
+                <div class="d-none" id="addWorkDiv">
                     <div class="d-flex justify-content-center mt-4">
-                        <button class="btn btn-sm btn-outline-success" id="addWorkButton">Add Work</button>
-                    </div>
+                        <form action="process.php" method="POST">
+                            <fieldset class="border border-primary px-3">
+                                <legend class="ml-5 w-auto">New Work</legend>
 
-                    <div class="d-none" id="addWorkDiv">
-                        <div class="d-flex justify-content-center mt-4">
-                            <form action="process.php" method="POST">
-                                <fieldset class="border border-primary px-3">
-                                    <legend class="ml-5 w-auto">New Work</legend>
+                                <input type="hidden" name="customer_id" value="<?php echo $_GET['worklist'] ?>">
 
-                                    <input type="hidden" name="customer_id" value="<?php echo $_GET['worklist'] ?>">
+                                <div class="form-group">
+                                    <label for="worklist_name">Work Name</label>
+                                    <input type="text" id="worklist_name" name="worklist_name">
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="worklist_name">Work Name</label>
-                                        <input type="text" id="worklist_name" name="worklist_name">
-                                    </div>
+                                <div class="form-group">
+                                    <label for="worklist_total_minutes">Total Hours</label>
+                                    <input type="number" id="worklist_total_minutes" name="worklist_total_minutes">
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="worklist_total_minutes">Total Hours</label>
-                                        <input type="number" id="worklist_total_minutes" name="worklist_total_minutes">
-                                    </div>
+                                <div class="form-group">
+                                    <label for="worklist_active">Active</label>
+                                    <input type="number" id="worklist_active" name="worklist_active>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="worklist_active">Active</label>
-                                        <input type="number" id="worklist_active" name="worklist_active>
-                                    </div>
-
-                                    <div class="form-group text-center">
-                                        <button type="submit" class="btn btn-sm btn-outline-success" id="addWorkButton" name="saveNewToWorklist">Add Work</button>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
+                                <div class="form-group text-center">
+                                    <button type="submit" class="btn btn-sm btn-outline-success" id="addWorkButton" name="saveNewToWorklist">Add Work</button>
+                                </div>
+                            </fieldset>
+                        </form>
                     </div>
                 </div>
+            </div>
         <?php endif; ?>    
     
     <!-- My JS -->
