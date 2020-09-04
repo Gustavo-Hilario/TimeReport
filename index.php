@@ -213,6 +213,15 @@
 
                 $sqlWorklistView = "SELECT * FROM worklist_sums WHERE customer_id=$customer_id;";
                 $sqlWorklistViewResult = mysqli_query($mysqli, $sqlWorklistView);
+                $sqlWorklistViewResultCheck = mysqli_num_rows($sqlWorklistViewResult);
+
+                $totals_hours = 0; 
+                $totals_worked = 0; 
+                $totals_available = 0;
+
+                $totals_active_hours = 0; 
+                $totals_active_worked = 0; 
+                $totals_active_available = 0;
             ?>
 
                 <div class="w-auto d-flex flex-column justify-content-center my-5">
@@ -239,22 +248,52 @@
                                 ?>
                                     
                                 <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                    
                                     <tr>
                                         <td><?php echo $worklist[$i]['worklist_id'] ?></td>
                                         <td><?php echo $worklist[$i]['worklist_name'] ?></td>
                                         <td><?php echo $worklist[$i]['worklist_total_minutes'] ?></td>
 
-                                        <?php if(isset($worklistView)): ?>
+                                        <?php if(isset($worklistView[$i])): ?>
                                             <td><?php echo $worklistView[$i]['worklist_worked_minutes'] ?></td>
                                             <td><?php echo $worklistView[$i]['worklist_remaining_minutes'] ?></td>
+
+                                            <?php
+                                                $totals_hours += $worklist[$i]['worklist_total_minutes']; 
+                                                $totals_worked += $worklistView[$i]['worklist_worked_minutes']; 
+                                                $totals_available += $worklistView[$i]['worklist_remaining_minutes'];
+                                                
+                                                if($worklist[$i]['worklist_active'] == 1){
+                                                    $totals_active_hours += $worklist[$i]['worklist_total_minutes']; 
+                                                    $totals_active_worked += $worklistView[$i]['worklist_worked_minutes']; 
+                                                    $totals_active_available += $worklistView[$i]['worklist_remaining_minutes'];
+                                                }
+                                            ?>
+
                                             <?php else:?>
                                                 <td><?php echo '-'; ?></td>
                                                 <td><?php echo '-'; ?></td>
                                         <?php endif; ?>
-                                        
+
                                         <td><?php echo $worklist[$i]['worklist_active'] ?></td>
                                     </tr>
                                 <?php endfor; ?>
+
+                                <tr>
+                                    <td colspan="2">TOTALS</td>
+                                    <td><?php echo $totals_hours; ?></td>
+                                    <td><?php echo $totals_worked; ?></td>
+                                    <td><?php echo $totals_available; ?></td>
+                                    <td>ALL</td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2">TOTALS ACTIVE</td>
+                                    <td><?php echo $totals_active_hours; ?></td>
+                                    <td><?php echo $totals_active_worked; ?></td>
+                                    <td><?php echo $totals_active_available; ?></td>
+                                    <td>ACTIVE</td>
+                                </tr>
                             </table>
                         </div> 
                     <?php endif; ?>
