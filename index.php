@@ -33,6 +33,14 @@
                 $sql = "SELECT * FROM customers;";
                 $sqlCustomerResult = mysqli_query($mysqli, $sql);
                 $sqlCustomerResultCheck = mysqli_num_rows($sqlCustomerResult);
+
+                $sql = "SELECT * FROM customer_sums;";
+                $sqlCustomerSumsResult = mysqli_query($mysqli, $sql);
+                $sqlCustomerSumsResultCheck = mysqli_num_rows($sqlCustomerSumsResult);
+
+                while($row = mysqli_fetch_assoc($sqlCustomerSumsResult)) {
+                    $customer_sums = $row;
+                }
             ?>
             <table class="text-center border bg-dark text-white">
                 <tr>
@@ -42,8 +50,7 @@
                     <th>Hour Total</th>
                 </tr>
 
-                <?php
-                    while ($customer = mysqli_fetch_assoc($sqlCustomerResult)): ?>
+                <?php while ($customer = mysqli_fetch_assoc($sqlCustomerResult)): ?>
                     <tr>
                         <td><?php echo $customer['customer_id'] ?></td>
                         <td><?php echo $customer['customer_name'] ?></td>
@@ -97,7 +104,7 @@
                                 </svg>
                             </a>
                                 
-                            <a class="customerReport">
+                            <a href="index.php?customerReport=<?php echo $customer['customer_id'] ?>&customer=<?php echo $customer['customer_name'] ?>" class="customerReport">
                                 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 128 128">
                                     <defs><style>.cls-1{fill:#2d3e50;}.cls-2{fill:#2e79bd;}</style></defs>
                                     <title>b</title>
@@ -109,7 +116,14 @@
                                 </svg>
                             </a>
                         </td>
-                        <td>Hour Total</td>
+                        <?php if(isset($sqlCustomerSumsResultCheck)): ?>
+                            <?php if($customer['customer_id'] == $customer_sums['customer_id']): ?>
+                                <td><?php echo $customer_sums['customer_remaining_minutes'] ?></td>
+                                <?php else: ?>
+                                    <td><?php echo '-' ?></td>
+                            <?php endif; ?>
+                            
+                        <?php endif; ?>
                     </tr>
                 <?php endwhile; ?>
                     
@@ -158,7 +172,7 @@
 
                             <div class="text-center">
                                 <label for="work_date" class="mr-2">Date</label>
-                                <input type="text" id="work_date" name="work_date" placeholder="2020-20-02">
+                                <input type="date" id="work_date" name="work_date" placeholder="2020-20-02">
                                 <label for="work_minutes" class="mr-2">Worked Time in Minutes</label>
                                 <input type="number" id="work_minutes" name="work_minutes" placeholder="60">
                             </div>
@@ -275,7 +289,28 @@
                                             <td colspan="2"><?php echo 'ADD WORK'; ?></td>
                                     <?php endif; ?>
 
-                                    <td><?php echo $worklist[$i]['worklist_active'] ?></td>
+                                    <td>
+                                        <form action="process.php" method="POST" class="changeActiveStatusFrom">
+                                            <input type="hidden" value="<?php echo $worklist[$i]['worklist_name'] ?>" name="worklist_name">
+                                            <input type="hidden" value="<?php echo $_GET['worklist'] ?>" name="customer_id">
+                                            
+                                            <button type="submit" class="btn" name="changeActiveStatus">
+                                            <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                                <input type="hidden" value="0" name="activeNewStatus">
+                                                <label class="switch">
+                                                    <input type="checkbox" checked>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <?php else:?>
+                                                    <input type="hidden" value="1" name="activeNewStatus">
+                                                    <label class="switch">
+                                                        <input type="checkbox">
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                            <?php endif; ?>
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                             <?php endfor; ?>
 
@@ -298,9 +333,8 @@
                     </div> 
                 <?php endif; ?>
 
-
                 <div class="d-flex justify-content-center mt-4">
-                    <button class="btn btn-sm btn-outline-success" id="addWorkButton">Add Work</button>
+                    <button class="btn btn-sm btn-outline-success" id="addWorkButton">Add To Worklist</button>
                 </div>
 
                 <div class="d-none" id="addWorkDiv">
@@ -323,7 +357,11 @@
 
                                 <div class="form-group">
                                     <label for="worklist_active">Active</label>
-                                    <input type="number" id="worklist_active" name="worklist_active>
+                                        <input type="hidden" value="1" name="worklist_active">
+                                        <label class="switch">
+                                            <input type="checkbox" checked id="addWorklistFormActiveStatus">
+                                            <span class="slider round"></span>
+                                        </label>
                                 </div>
 
                                 <div class="form-group text-center">
@@ -334,8 +372,99 @@
                     </div>
                 </div>
             </div>
-        <?php endif; ?>    
-    
+        <?php endif; ?>  
+        
+        <!-- CUSTOMER REPORT -->
+        <?php if(isset($_GET['customerReport'])): ?>
+            <?php
+                $customer_id = $_GET['customerReport'];
+                $customer_name = $_GET['customer'];
+                $total_worked_hours = 0;
+
+                $sqlCustomerReportID = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
+                $sqlCustomerReportIDResult = mysqli_query($mysqli, $sqlCustomerReportID);
+                $sqlCustomerReportIDResultCheck = mysqli_num_rows($sqlCustomerReportIDResult);
+
+
+                $sqlWork = "SELECT * FROM work;";
+                $sqlWorkResult = mysqli_query($mysqli, $sqlWork);
+                $sqlWorkResultCheck = mysqli_num_rows($sqlWorkResult);
+            ?>
+
+            <?php if(isset($sqlCustomerReportIDResult)): ?>
+                <?php 
+                    while($row = mysqli_fetch_assoc($sqlCustomerReportIDResult)){
+                        $worklist[] = $row;
+                    }
+                    while($row = mysqli_fetch_assoc($sqlWorkResult)){
+                        $work[] = $row;
+                    }
+                ?>
+
+                <div class="d-flex">
+                    <div class="mr-5">
+                        <h4 class="m-0"><?php echo $customer_name ?></h4>
+                    </div>
+                    <div class="w-100">
+                        <form action="index.php" method="GET">
+                            <div class="d-flex justify-content-around align-items-center">
+                                <div class="form-group">
+                                    <input type="date" name="date_from" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="date" name="date_to" required>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-outline-success">Filter</button>
+                                </div>
+                                <div class="form-group">
+                                    <select name="worklist_name" id="">
+                                        <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                            <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                                <option value="<?php echo $worklist[$i]['worklist_name'] ?>">
+                                                    <?php echo $worklist[$i]['worklist_name'] ?>
+                                                </option>
+                                            <?php endif; ?>
+                                        <?php endfor; ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                </div>
+
+                <div class="w-auto d-flex flex-column justify-content-center my-5">
+                    <div class="d-flex justify-content-center">
+                        <table class="text-center border bg-dark text-white">
+                            <tr>
+                                <th>Work Name</th>
+                                <th>Date</th>
+                                <th>Worked Hours</th>
+                                <th>Actions</th>
+                            </tr>
+
+                            <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                    <?php for ($j = 0; $j < count($work) ; $j++): ?>
+                                        <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
+                                            <tr>
+                                                <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                                <td><?php echo $work[$j]['work_date'] ?></td>
+                                                <td><?php echo $work[$j]['work_minutes'] ?></td>
+                                                <td><?php echo 'ACTIONS'; ?></td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    <?php endfor; ?>
+                                <?php endif; ?>
+                            <?php endfor; ?>
+                        </table>
+                    </div> 
+                </div>
+            <?php endif; ?>
+            
+        <?php endif;?>
+    </div>
     <!-- My JS -->
     <script type="text/javascript" src="./public/js/main.js"></script>
 </body>
