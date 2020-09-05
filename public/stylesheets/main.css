@@ -9,6 +9,26 @@ table{
     border: 2px solid purple;
 }
 
+.filteringForm .btn{
+    /* width: 60px;
+    height: 34px; */
+    background-color: transparent;
+}
+
+.filteringForm .btn:focus{
+    box-shadow: none;
+}
+
+.deleteWorkForm .btn{
+    /* width: 60px;
+    height: 34px; */
+    background-color: transparent;
+}
+
+.deleteWorkForm .btn:focus{
+    box-shadow: none;
+}
+
 /* TOOGLE SWITCH */
 
     .changeActiveStatusFrom .btn{

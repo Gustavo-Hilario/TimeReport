@@ -42,4 +42,10 @@
         header('Location: index.php?worklist='.$customer_id);
     }
 
+    if(isset($_POST['deleteWork'])){
+        $work_id = $_POST['work_id'];
+        $mysqli->query("DELETE FROM work WHERE work_id='$work_id';") or die($mysqli->error);
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+    }
+
     
