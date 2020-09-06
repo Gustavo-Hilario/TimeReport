@@ -17,7 +17,7 @@
     <!-- My CSS -->
     <link rel="stylesheet" href="./public/stylesheets/main.css">
 
-    <title>Time Report HomePage</title>
+    <title>Time Report</title>
 </head>
 <body>
     <!-- Optional JavaScript -->
@@ -38,8 +38,15 @@
                 $sqlCustomerSumsResult = mysqli_query($mysqli, $sql);
                 $sqlCustomerSumsResultCheck = mysqli_num_rows($sqlCustomerSumsResult);
 
+                while($row = mysqli_fetch_assoc($sqlCustomerResult)) {
+                    $customer[] = $row;
+                }
+
                 while($row = mysqli_fetch_assoc($sqlCustomerSumsResult)) {
-                    $customer_sums = $row;
+                    $customer_sums[] = $row;
+                }
+                if(!isset($customer_sums)){
+                    $customer_sums = [];
                 }
             ?>
             <table class="text-center border bg-dark text-white">
@@ -50,12 +57,12 @@
                     <th>Hour Total</th>
                 </thead>
 
-                <?php while ($customer = mysqli_fetch_assoc($sqlCustomerResult)): ?>
+                <?php for ($i = 0; $i < count($customer); $i++): ?>
                     <tr>
-                        <td><?php echo $customer['customer_id'] ?></td>
-                        <td><?php echo $customer['customer_name'] ?></td>
+                        <td><?php echo $customer[$i]['customer_id'] ?></td>
+                        <td><?php echo $customer[$i]['customer_name'] ?></td>
                         <td>
-                            <a href="index.php?addWork=<?php echo $customer['customer_id'] ?>" class="addWorkButton">
+                            <a href="index.php?addWork=<?php echo $customer[$i]['customer_id'] ?>" class="addWorkButton">
                                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="24" width="24" x="0px" y="0px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
                                     <g>
                                         <rect x="76" y="14.9" fill="#F5F0E1" width="48" height="6.4"/>
@@ -89,7 +96,7 @@
                                 </svg>
                             </a>
 
-                            <a href="index.php?worklist=<?php echo $customer['customer_id'] ?>" class="worklist">
+                            <a href="index.php?worklist=<?php echo $customer[$i]['customer_id'] ?>" class="worklist">
                                 <svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="24" width="24" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
                                     <g transform="translate(0 -1028.4)">
                                     <path d="m3 1035.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#16a085"/>
@@ -104,7 +111,7 @@
                                 </svg>
                             </a>
                                 
-                            <a href="index.php?customerReport=<?php echo $customer['customer_id'] ?>&customer=<?php echo $customer['customer_name'] ?>" class="customerReport">
+                            <a href="index.php?customerReport=<?php echo $customer[$i]['customer_id'] ?>&customer=<?php echo $customer[$i]['customer_name'] ?>" class="customerReport">
                                 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 128 128">
                                     <defs><style>.cls-1{fill:#2d3e50;}.cls-2{fill:#2e79bd;}</style></defs>
                                     <title>b</title>
@@ -116,16 +123,13 @@
                                 </svg>
                             </a>
                         </td>
-                        <?php if(isset($sqlCustomerSumsResultCheck)): ?>
-                            <?php if($customer['customer_id'] == $customer_sums['customer_id']): ?>
-                                <td><?php echo $customer_sums['customer_remaining_minutes'] ?></td>
-                                <?php else: ?>
-                                    <td><?php echo '-' ?></td>
+                        <?php for($j = 0; $j < count($customer_sums); $j++): ?>
+                            <?php if($customer[$i]['customer_id'] == $customer_sums[$j]['customer_id']): ?>
+                                <td><?php echo round($customer_sums[$j]['customer_remaining_minutes']/60, 1) ?></td>
                             <?php endif; ?>
-                            
-                        <?php endif; ?>
+                        <?php endfor; ?>
                     </tr>
-                <?php endwhile; ?>
+                <?php endfor; ?>
                     
             </table>
         </div>
@@ -134,7 +138,7 @@
         <div class="w-50 d-flex justify-content-around mx-auto mt-4">
             <button id="newCustomerButton" class="btn btn-sm btn-outline-success" >Add New Customer</button>
             <form action="index.php" method="GET">
-                <button type="submit" class="btn btn-sm btn-outline-success" value="allCustomersReport">All Customer Report</button>
+                <button type="submit" class="btn btn-sm btn-outline-success" value="true" name="allCustomersReport">All Customer Report</button>
             </form>
         </div>
 
@@ -263,17 +267,19 @@
                                     $worklistView[] = $row;
                                 };
                             ?>
+
+                            <!-- ENSURE THAT VIEW IS EQUAL TO TABLE -->
                                 
                             <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
                                 
                                 <tr>
                                     <td><?php echo $worklist[$i]['worklist_id'] ?></td>
                                     <td><?php echo $worklist[$i]['worklist_name'] ?></td>
-                                    <td><?php echo $worklist[$i]['worklist_total_minutes'] ?></td>
+                                    <td><?php echo round($worklist[$i]['worklist_total_minutes']/60, 1) ?></td>
 
                                     <?php if(isset($worklistView[$i])): ?>
-                                        <td><?php echo $worklistView[$i]['worklist_worked_minutes'] ?></td>
-                                        <td><?php echo $worklistView[$i]['worklist_remaining_minutes'] ?></td>
+                                        <td><?php echo round($worklistView[$i]['worklist_worked_minutes']/60,1) ?></td>
+                                        <td><?php echo round($worklistView[$i]['worklist_remaining_minutes']/60,1) ?></td>
 
                                         <?php
                                             $totals_hours += $worklist[$i]['worklist_total_minutes']; 
@@ -318,17 +324,17 @@
 
                             <tr>
                                 <td colspan="2">TOTALS</td>
-                                <td><?php echo $totals_hours; ?></td>
-                                <td><?php echo $totals_worked; ?></td>
-                                <td><?php echo $totals_available; ?></td>
+                                <td><?php echo round($totals_hours/60,1); ?></td>
+                                <td><?php echo round($totals_worked/60,1); ?></td>
+                                <td><?php echo round($totals_available/60,1); ?></td>
                                 <td>ALL</td>
                             </tr>
 
                             <tr>
                                 <td colspan="2">TOTALS ACTIVE</td>
-                                <td><?php echo $totals_active_hours; ?></td>
-                                <td><?php echo $totals_active_worked; ?></td>
-                                <td><?php echo $totals_active_available; ?></td>
+                                <td><?php echo round($totals_active_hours/60,1); ?></td>
+                                <td><?php echo round($totals_active_worked/60,1); ?></td>
+                                <td><?php echo round($totals_active_available/60,1); ?></td>
                                 <td>ACTIVE</td>
                             </tr>
                         </table>
@@ -398,8 +404,17 @@
                     while($row = mysqli_fetch_assoc($sqlCustomerReportIDResult)){
                         $worklist[] = $row;
                     }
+
+                    if(!isset($worklist)){
+                        $worklist = [];
+                    }
+
                     while($row = mysqli_fetch_assoc($sqlWorkResult)){
                         $work[] = $row;
+                    }
+
+                    if(!isset($work)){
+                        $work = [];
                     }
 
                     if(isset($_GET['date_from']) && $_GET['date_from'] !== ""){
@@ -424,7 +439,7 @@
                 ?>
 
                 <!-- FILTERING FORM -->
-                <div class="d-flex">
+                <div class="d-flex mt-4">
                     <div class="mr-5">
                         <h4 class="m-0"><?php echo $customer_name ?></h4>
                     </div>
@@ -489,13 +504,17 @@
                                                 <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
                                                     <?php if( $date_from <= $work[$j]['work_date']): ?>
                                                         <?php if( $date_to >= $work[$j]['work_date']): ?>
+                                                            <?php
+                                                                $total_worked_hours += $work[$j]['work_minutes'];
+                                                            ?>
                                                             <tr>
                                                                 <td><?php echo $worklist[$i]['worklist_name'] ?></td>
                                                                 <td><?php echo $work[$j]['work_date'] ?></td>
-                                                                <td><?php echo $work[$j]['work_minutes'] ?></td>
-                                                                <form action="process.php" method="POST">
+                                                                <td><?php echo round($work[$j]['work_minutes']/60, 3) ?></td>
+                                                                <form action="process.php" method="POST" class="deleteWorkForm">
+                                                                    <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
                                                                     <td>
-                                                                        <button type="submit" class="btn p-0">
+                                                                        <button type="submit" class="btn p-0" name="deleteWork">
                                                                             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="50" width="50" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
                                                                                 <style type="text/css">
                                                                                     .st0{fill:url(#SVGID_1_);}
@@ -550,13 +569,17 @@
                                             <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
                                                 <?php if( $date_from <= $work[$j]['work_date']): ?>
                                                     <?php if( $date_to >= $work[$j]['work_date']): ?>
+                                                        <?php
+                                                            $total_worked_hours += $work[$j]['work_minutes'];
+                                                        ?>
                                                         <tr>
                                                             <td><?php echo $worklist[$i]['worklist_name'] ?></td>
                                                             <td><?php echo $work[$j]['work_date'] ?></td>
-                                                            <td><?php echo $work[$j]['work_minutes'] ?></td>
+                                                            <td><?php echo round($work[$j]['work_minutes']/60, 3); ?></td>
                                                             <form action="process.php" method="POST" class="deleteWorkForm">
+                                                                <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
                                                                 <td>
-                                                                    <button type="submit" class="btn p-0">
+                                                                    <button type="submit" class="btn p-0" name="deleteWork">
                                                                         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="50" width="50" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
                                                                             <style type="text/css">
                                                                                 .st0{fill:url(#SVGID_1_);}
@@ -608,6 +631,291 @@
                                     <?php endif; ?>
                                 <?php endif; ?>
                             <?php endfor; ?>
+                            <tr>
+                                <td colspan="2">Total Worked Hours</td>
+                                <td colspan="2"><?php echo round($total_worked_hours/60,2).' hours'; ?></td>
+                            </tr>
+                        </table>
+                    </div> 
+                </div>
+            <?php endif; ?>
+            
+        <?php endif;?>
+
+        <!-- ALL CUSTOMER REPORT -->
+        <?php if(isset($_GET['allCustomersReport'])): ?>
+            <?php
+                $total_worked_hours = 0;
+
+                $sqlCustomers = "SELECT * FROM customers;";
+                $sqlCustomersResult = mysqli_query($mysqli, $sqlCustomers);
+                $sqlCustomersResultCheck = mysqli_num_rows($sqlCustomersResult);
+
+                $sqlAllCustomerReport = "SELECT * FROM worklist;";
+                $sqlAllCustomerReportResult = mysqli_query($mysqli, $sqlAllCustomerReport);
+                $sqlAllCustomerReportResultCheck = mysqli_num_rows($sqlAllCustomerReportResult);
+
+
+                $sqlWork = "SELECT * FROM work;";
+                $sqlWorkResult = mysqli_query($mysqli, $sqlWork);
+                $sqlWorkResultCheck = mysqli_num_rows($sqlWorkResult);
+            ?>
+
+            <?php if(isset($sqlAllCustomerReportResult)): ?>
+                <?php 
+                    while($row = mysqli_fetch_assoc($sqlCustomersResult)){
+                        $customers[] = $row;
+                    }
+
+                    while($row = mysqli_fetch_assoc($sqlAllCustomerReportResult)){
+                        $worklist[] = $row;
+                    }
+                    while($row = mysqli_fetch_assoc($sqlWorkResult)){
+                        $work[] = $row;
+                    }
+
+                    if(isset($_GET['date_from']) && $_GET['date_from'] !== ""){
+                        $date_from = $_GET['date_from'];
+                    } else if(!isset($_GET['date_from'])){
+                        $currentMonth = date('m');
+                        $currentYear = date('Y');
+                        $date_from = "$currentYear-$currentMonth-01";
+                    } else {
+                        $date_from = "0000-00-00";
+                    }
+
+                    if(isset($_GET['date_to']) && $_GET['date_to'] !== "" ){
+                        $date_to = $_GET['date_to'];
+                    } else {
+                        $date_to = date('Y-m-d');
+                    }
+
+                    if(isset($_GET['customer_name'])){
+                        $customer_name = $_GET['customer_name'];
+                    } else {
+                        $customer_name = 'All Customers';
+                    }
+
+                    if(isset($_GET['worklist_name'])){
+                        $worklist_name = $_GET['worklist_name'];
+                    } else {
+                        $worklist_name = 'All works';
+                    }
+                ?>
+
+                <!-- FILTERING FORM -->
+                <div class="d-flex">
+                    <div class="mr-5">
+                        <h4 class="m-0"><?php echo 'customer_name' ?></h4>
+                    </div>
+                    <div class="w-100">
+                        <form action="index.php" method="GET" class="filteringForm">
+                            <div class="d-flex justify-content-around align-items-center">
+                                <input type="hidden" value="true" name="allCustomersReport">
+                                <div class="form-group">
+                                    <input type="date" value="<?php echo $date_from ?>" name="date_from">
+                                </div>
+                                <div class="form-group">
+                                    <input type="date" value="<?php echo $date_to ?>" name="date_to">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn p-0">
+                                        <svg viewBox="0 -26 512 512" xmlns="http://www.w3.org/2000/svg" height="40" width="40">
+                                            <path d="m56 70 160 200v180l6.878906-1.148438c16.492188-2.75 31.660156-9.703124 44.269532-19.839843 12.613281-10.152344 22.640624-23.492188 28.851562-39.011719v-120l160-200zm0 0" fill="#e87288"/>
+                                            <path d="m502 10v20c0 22.089844-17.910156 40-40 40-51.355469 0-350.152344 0-416.171875 0-19.789063 0-35.828125-16.039062-35.828125-35.828125v-24.171875zm0 0" fill="#fafaff"/>
+                                            <path d="m376 120c5.519531 0 10-4.480469 10-10s-4.480469-10-10-10-10 4.480469-10 10 4.480469 10 10 10zm0 0"/>
+                                            <path d="m502 0h-492c-5.523438 0-10 4.476562-10 10v24.171875c0 25.269531 20.558594 45.828125 45.828125 45.828125h5.367187l154.804688 193.507812v176.492188c0 6.1875 5.5625 10.882812 11.648438 9.863281l6.875-1.148437c17.867187-2.980469 34.773437-10.558594 48.898437-21.914063 20.832031-16.769531 32.578125-40.902343 32.578125-46.800781v-116.492188l154.804688-193.507812h1.195312c27.570312 0 50-22.429688 50-50v-20c0-5.523438-4.476562-10-10-10zm-241.117188 421.21875c-10.1875 8.191406-22.160156 13.957031-34.882812 16.832031v-158.050781h60v108.019531c-5.507812 12.933594-14.164062 24.382813-25.117188 33.199219zm30.308594-161.21875h-70.386718l-144-180h358.386718zm200.808594-230c0 16.542969-13.457031 30-30 30h-416.171875c-14.242187 0-25.828125-11.585938-25.828125-25.828125v-14.171875h472zm0 0"/>
+                                            <path d="m270.519531 237.808594c4.304688 3.441406 10.597657 2.761718 14.058594-1.5625l72.339844-90.410156c3.449219-4.3125 2.753906-10.605469-1.558594-14.054688s-10.605469-2.753906-14.058594 1.558594l-72.339843 90.410156c-3.449219 4.3125-2.75 10.605469 1.558593 14.058594zm0 0"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <select name="worklist_name" id="">
+                                        <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                            <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                                <option value="<?php echo $worklist[$i]['worklist_name'] ?>">
+                                                    <?php echo $worklist[$i]['worklist_name'] ?>
+                                                </option>
+                                            <?php endif; ?>
+                                        <?php endfor; ?>
+                                        <option value="<?php echo 'All works' ?>" selected="selected">
+                                            All works
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select name="customer_name" id="">
+                                        <?php for ($i = 0; $i < count($customers) ; $i++): ?>
+                                            <option value="<?php echo $customers[$i]['customer_name'] ?>">
+                                                <?php echo $customers[$i]['customer_name'] ?>
+                                            </option>
+                                        <?php endfor; ?>
+                                        <option value="<?php echo 'All Customers' ?>" selected="selected">
+                                            All Customers
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                </div>
+
+                <!-- FILTERED TABLE -->
+                <div class="w-auto d-flex flex-column justify-content-center my-3">
+                    <div class="d-flex justify-content-center">
+                        <table class="text-center border bg-dark text-white">
+                            <thead>
+                                <th>Customer Name</th>
+                                <th>Work Name</th>
+                                <th>Date</th>
+                                <th>Worked Hours</th>
+                                <th>Actions</th>
+                            </thead>
+
+                            <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                    <?php if($customer_name == 'All Customers'): ?>
+                                        <?php if(isset($worklist_name) && $worklist_name == 'All works'): ?>
+                                            <?php for ($j = 0; $j < count($work) ; $j++): ?>
+                                                <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
+                                                    <?php if( $date_from <= $work[$j]['work_date']): ?>
+                                                        <?php if( $date_to >= $work[$j]['work_date']): ?>
+                                                            <?php
+                                                                $total_worked_hours += $work[$j]['work_minutes'];
+                                                            ?>
+                                                            <tr>
+                                                                <?php for ($k = 0; $k < count($customers) ; $k++): ?>
+                                                                    <?php if( $customers[$k]['customer_id'] == $worklist[$i]['customer_id']): ?>
+                                                                        <td><?php echo $customers[$k]['customer_name'] ?></td>
+                                                                    <?php endif; ?>
+                                                                <?php endfor; ?>
+                                                                <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                                                <td><?php echo $work[$j]['work_date'] ?></td>
+                                                                <td><?php echo round($work[$j]['work_minutes']/60, 3) ?></td>
+                                                                <form action="process.php" method="POST">
+                                                                    <td>
+                                                                        <button type="submit" class="btn p-0">
+                                                                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="50" width="50" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                                                                                <style type="text/css">
+                                                                                    .st0{fill:url(#SVGID_1_);}
+                                                                                    .st1{fill:url(#SVGID_2_);}
+                                                                                    .st2{fill:url(#SVGID_3_);}
+                                                                                    .st3{fill:url(#SVGID_4_);}
+                                                                                    .st4{fill:url(#SVGID_5_);}
+                                                                                    .st5{fill:url(#SVGID_6_);}
+                                                                                    .st6{fill:url(#SVGID_7_);}
+                                                                                    .st7{fill:url(#SVGID_8_);}
+                                                                                    .st8{fill:url(#SVGID_9_);}
+                                                                                    .st9{fill:url(#SVGID_10_);}
+                                                                                    .st10{fill:url(#SVGID_11_);}
+                                                                                    .st11{fill:url(#SVGID_12_);}
+                                                                                    .st12{fill:url(#SVGID_13_);}
+                                                                                    .st13{fill:url(#SVGID_14_);}
+                                                                                    .st14{fill:url(#SVGID_15_);}
+                                                                                    .st15{fill:url(#SVGID_16_);}
+                                                                                    .st16{fill:url(#SVGID_17_);}
+                                                                                    .st17{fill:url(#SVGID_18_);}
+                                                                                    .st18{fill:url(#SVGID_19_);}
+                                                                                    .st19{fill:url(#SVGID_20_);}
+                                                                                </style>
+                                                                                <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
+                                                                                    <stop  offset="0" style="stop-color:#1245C6"/>
+                                                                                    <stop  offset="1" style="stop-color:#9909B7"/>
+                                                                                </linearGradient>
+                                                                                <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
+                                                                                C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
+                                                                                c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
+                                                                                c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
+                                                                                c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
+                                                                                c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
+                                                                                M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
+                                                                                c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
+                                                                                c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
+                                                                                c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
+                                                                                c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
+                                                                                v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </td>
+                                                                </form>
+                                                            </tr>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            <?php endfor; ?>
+                                        <?php else: ?>
+                                            <?php for ($j = 0; $j < count($work) ; $j++): ?>
+                                                <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
+                                                    <?php if( $date_from <= $work[$j]['work_date']): ?>
+                                                        <?php if( $date_to >= $work[$j]['work_date']): ?>
+                                                            <?php
+                                                                $total_worked_hours += $work[$j]['work_minutes'];
+                                                            ?>
+                                                            <tr>
+                                                                <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                                                <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                                                <td><?php echo $work[$j]['work_date'] ?></td>
+                                                                <td><?php echo round($work[$j]['work_minutes']/60, 3); ?></td>
+                                                                <form action="process.php" method="POST" class="deleteWorkForm">
+                                                                    <td>
+                                                                        <button type="submit" class="btn p-0">
+                                                                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="50" width="50" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                                                                                <style type="text/css">
+                                                                                    .st0{fill:url(#SVGID_1_);}
+                                                                                    .st1{fill:url(#SVGID_2_);}
+                                                                                    .st2{fill:url(#SVGID_3_);}
+                                                                                    .st3{fill:url(#SVGID_4_);}
+                                                                                    .st4{fill:url(#SVGID_5_);}
+                                                                                    .st5{fill:url(#SVGID_6_);}
+                                                                                    .st6{fill:url(#SVGID_7_);}
+                                                                                    .st7{fill:url(#SVGID_8_);}
+                                                                                    .st8{fill:url(#SVGID_9_);}
+                                                                                    .st9{fill:url(#SVGID_10_);}
+                                                                                    .st10{fill:url(#SVGID_11_);}
+                                                                                    .st11{fill:url(#SVGID_12_);}
+                                                                                    .st12{fill:url(#SVGID_13_);}
+                                                                                    .st13{fill:url(#SVGID_14_);}
+                                                                                    .st14{fill:url(#SVGID_15_);}
+                                                                                    .st15{fill:url(#SVGID_16_);}
+                                                                                    .st16{fill:url(#SVGID_17_);}
+                                                                                    .st17{fill:url(#SVGID_18_);}
+                                                                                    .st18{fill:url(#SVGID_19_);}
+                                                                                    .st19{fill:url(#SVGID_20_);}
+                                                                                </style>
+                                                                                <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
+                                                                                    <stop  offset="0" style="stop-color:#1245C6"/>
+                                                                                    <stop  offset="1" style="stop-color:#9909B7"/>
+                                                                                </linearGradient>
+                                                                                <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
+                                                                                C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
+                                                                                c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
+                                                                                c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
+                                                                                c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
+                                                                                c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
+                                                                                M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
+                                                                                c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
+                                                                                c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
+                                                                                c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
+                                                                                c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
+                                                                                v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </td>
+                                                                </form>
+                                                            </tr>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            <?php endfor; ?>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            <?php endfor; ?>
+                            <tr>
+                                <td colspan="2">Total Worked Hours</td>
+                                <td colspan="2"><?php echo round($total_worked_hours/60,2).' hours'; ?></td>
+                            </tr>
                         </table>
                     </div> 
                 </div>
