@@ -312,22 +312,22 @@
                                             <td>
                                                 <form action="process.php" method="POST" class="changeActiveStatusFrom">
                                                     <input type="hidden" value="<?php echo $worklist[$i]['worklist_name'] ?>" name="worklist_name">
-                                                    <input type="hidden" value="<?php echo $_GET['worklist'] ?>" name="customer_id">
+                                                    <input type="hidden" value="<?php echo $customer_id ?>" name="customer_id">
                                                     
                                                     <button type="submit" class="btn" name="changeActiveStatus">
-                                                    <?php if($worklist[$i]['worklist_active'] == 1): ?>
-                                                        <input type="hidden" value="0" name="activeNewStatus">
-                                                        <label class="switch">
-                                                            <input type="checkbox" checked>
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                        <?php else:?>
-                                                            <input type="hidden" value="1" name="activeNewStatus">
+                                                        <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                                            <input type="hidden" value="0" name="activeNewStatus">
                                                             <label class="switch">
-                                                                <input type="checkbox">
+                                                                <input type="checkbox" checked>
                                                                 <span class="slider round"></span>
                                                             </label>
-                                                    <?php endif; ?>
+                                                            <?php else:?>
+                                                                <input type="hidden" value="1" name="activeNewStatus">
+                                                                <label class="switch">
+                                                                    <input type="checkbox">
+                                                                    <span class="slider round"></span>
+                                                                </label>
+                                                        <?php endif; ?>
                                                     </button>
                                                 </form>
                                             </td>
@@ -729,7 +729,6 @@
 </html>
 
 <?php 
-
     function printTableData($work, $worklist, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers){ ?>
         <?php for ($j = 0; $j < count($work) ; $j++): ?>
             <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
@@ -801,4 +800,4 @@
                 <?php endif; ?>
             <?php endif; ?>
         <?php endfor; ?> 
-    <?php } ?>
+<?php } ?>

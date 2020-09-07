@@ -38,7 +38,7 @@
         $worklist_name = $_POST['worklist_name'];
         $newStatus = $_POST['activeNewStatus'];
         /* echo 'worklist_name: ' . $worklist_name . '<br/>' . 'newStatus: ' . $newStatus; */
-        $mysqli->query("UPDATE worklist SET worklist_active = '$newStatus' WHERE worklist_name='$worklist_name' ;") or die($mysqli->error);
+        $mysqli->query("UPDATE worklist SET worklist_active = '$newStatus' WHERE worklist_name='$worklist_name' AND customer_id='$customer_id' ;") or die($mysqli->error);
         header('Location: index.php?worklist='.$customer_id);
     }
 
