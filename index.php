@@ -150,6 +150,13 @@
                     <button type="submit" class="btn btn-sm btn-outline-success" value="true" name="allCustomersReport">All Customer Report</button>
                 </form>
             </div>
+            <div class="w-100 d-flex justify-content-start mx-auto mt-4">
+                <form action="index.php" method="GET">
+                    <button type="submit" id="newCustomerButton" class="btn btn-sm btn-outline-dark" >
+                        HomePage
+                    </button>
+                </form>
+            </div>
         </div>
 
         <!-- ADD NEW CUSTOMER FORM -->
@@ -705,7 +712,7 @@
                         $date_to = date('Y-m-d');
                     }
 
-                    if(isset($_GET['customer_name'])){
+                    if(isset($_GET['customer_name']) && $_GET['customer_name'] !== ''){
                         $customer_name = $_GET['customer_name'];
                     } else {
                         $customer_name = 'All Customers';
@@ -720,65 +727,55 @@
 
                 <!-- FILTERING FORM -->
                 <div class="row mt-4">
-                    <div class="col-12 col-md-3 col-xl-2 d-flex justify-content-center align-items-center">
-                        <h4 class="m-0"><?php echo $customer_name ?></h4>
-                    </div>
-                    <div class="col-12 col-md-9 col-xl-10">
-                        <form action="index.php" method="GET" class="filteringForm">
-                            <div class="row">
-                                <input type="hidden" value="true" name="allCustomersReport">
-                                <div class="col-6 col-md-6 col-xl-3 p-xl-0 mx-xl-0 d-flex mt-2">
-                                    <input type="date" value="<?php echo $date_from ?>" name="date_from">
-                                </div>
-                                <div class="col-6 col-md-6 col-xl-3 p-xl-0 mx-xl-0 d-flex mt-2">
-                                    <input type="date" value="<?php echo $date_to ?>" name="date_to">
-                                </div>
-                                <div class="col-5 col-xl-2 d-flex mt-2">
-                                    <select name="worklist_name" id="">
-                                        <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
-                                            <?php if($worklist[$i]['worklist_active'] == 1): ?>
-                                                <option value="<?php echo $worklist[$i]['worklist_name'] ?>">
-                                                    <?php echo $worklist[$i]['worklist_name'] ?>
-                                                </option>
-                                            <?php endif; ?>
-                                        <?php endfor; ?>
-                                        <option value="<?php echo 'All works' ?>" selected="selected">
-                                            All works
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-5 col-xl-2 d-flex mt-2">
-                                    <select name="customer_name" id="">
-                                        <?php for ($i = 0; $i < count($customers) ; $i++): ?>
-                                            <option value="<?php echo $customers[$i]['customer_name'] ?>">
-                                                <?php echo $customers[$i]['customer_name'] ?>
+                    <div class="col-10 d-md-flex">
+                        <div class="col-12 col-md-3 p-md-0 col-xl-2 d-flex justify-content-center align-items-center">
+                            <h4 class="m-0"><?php echo $customer_name ?></h4>
+                        </div>
+                        <div class="col-12 col-md-9 p-md-0 col-xl-10">
+                            <form action="index.php" method="GET" id="filteringAllCustomersForm">
+                                <div class="row ml-3">
+                                    <input type="hidden" value="true" name="allCustomersReport">
+                                    <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
+                                        <input type="date" value="<?php echo $date_from ?>" name="date_from">
+                                    </div>
+                                    <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
+                                        <input type="date" value="<?php echo $date_to ?>" name="date_to">
+                                    </div>
+                                    <div class="col-10 col-xl-4 d-flex mt-2">
+                                        <select name="worklist_name" class="w-75">
+                                            <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                                <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                                    <option value="<?php echo $worklist[$i]['worklist_name'] ?>">
+                                                        <?php echo $worklist[$i]['worklist_name'] ?>
+                                                    </option>
+                                                <?php endif; ?>
+                                            <?php endfor; ?>
+                                            <option value="<?php echo 'All works' ?>" selected="selected">
+                                                All works
                                             </option>
-                                        <?php endfor; ?>
-                                        <option value="<?php echo 'All Customers' ?>" selected="selected">
-                                            All Customers
-                                        </option>
-                                    </select>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" value="" name="customer_name">
+                                    <div class="col-2 col-xl-2 d-flex mt-2">
+                                        <button type="submit" class="btn p-0">
+                                            <svg viewBox="0 -26 512 512" xmlns="http://www.w3.org/2000/svg" height="40" width="40">
+                                                <path d="m56 70 160 200v180l6.878906-1.148438c16.492188-2.75 31.660156-9.703124 44.269532-19.839843 12.613281-10.152344 22.640624-23.492188 28.851562-39.011719v-120l160-200zm0 0" fill="#e87288"/>
+                                                <path d="m502 10v20c0 22.089844-17.910156 40-40 40-51.355469 0-350.152344 0-416.171875 0-19.789063 0-35.828125-16.039062-35.828125-35.828125v-24.171875zm0 0" fill="#fafaff"/>
+                                                <path d="m376 120c5.519531 0 10-4.480469 10-10s-4.480469-10-10-10-10 4.480469-10 10 4.480469 10 10 10zm0 0"/>
+                                                <path d="m502 0h-492c-5.523438 0-10 4.476562-10 10v24.171875c0 25.269531 20.558594 45.828125 45.828125 45.828125h5.367187l154.804688 193.507812v176.492188c0 6.1875 5.5625 10.882812 11.648438 9.863281l6.875-1.148437c17.867187-2.980469 34.773437-10.558594 48.898437-21.914063 20.832031-16.769531 32.578125-40.902343 32.578125-46.800781v-116.492188l154.804688-193.507812h1.195312c27.570312 0 50-22.429688 50-50v-20c0-5.523438-4.476562-10-10-10zm-241.117188 421.21875c-10.1875 8.191406-22.160156 13.957031-34.882812 16.832031v-158.050781h60v108.019531c-5.507812 12.933594-14.164062 24.382813-25.117188 33.199219zm30.308594-161.21875h-70.386718l-144-180h358.386718zm200.808594-230c0 16.542969-13.457031 30-30 30h-416.171875c-14.242187 0-25.828125-11.585938-25.828125-25.828125v-14.171875h472zm0 0"/>
+                                                <path d="m270.519531 237.808594c4.304688 3.441406 10.597657 2.761718 14.058594-1.5625l72.339844-90.410156c3.449219-4.3125 2.753906-10.605469-1.558594-14.054688s-10.605469-2.753906-14.058594 1.558594l-72.339843 90.410156c-3.449219 4.3125-2.75 10.605469 1.558593 14.058594zm0 0"/>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col-2 col-xl-2 d-flex mt-2">
-                                    <button type="submit" class="btn p-0">
-                                        <svg viewBox="0 -26 512 512" xmlns="http://www.w3.org/2000/svg" height="40" width="40">
-                                            <path d="m56 70 160 200v180l6.878906-1.148438c16.492188-2.75 31.660156-9.703124 44.269532-19.839843 12.613281-10.152344 22.640624-23.492188 28.851562-39.011719v-120l160-200zm0 0" fill="#e87288"/>
-                                            <path d="m502 10v20c0 22.089844-17.910156 40-40 40-51.355469 0-350.152344 0-416.171875 0-19.789063 0-35.828125-16.039062-35.828125-35.828125v-24.171875zm0 0" fill="#fafaff"/>
-                                            <path d="m376 120c5.519531 0 10-4.480469 10-10s-4.480469-10-10-10-10 4.480469-10 10 4.480469 10 10 10zm0 0"/>
-                                            <path d="m502 0h-492c-5.523438 0-10 4.476562-10 10v24.171875c0 25.269531 20.558594 45.828125 45.828125 45.828125h5.367187l154.804688 193.507812v176.492188c0 6.1875 5.5625 10.882812 11.648438 9.863281l6.875-1.148437c17.867187-2.980469 34.773437-10.558594 48.898437-21.914063 20.832031-16.769531 32.578125-40.902343 32.578125-46.800781v-116.492188l154.804688-193.507812h1.195312c27.570312 0 50-22.429688 50-50v-20c0-5.523438-4.476562-10-10-10zm-241.117188 421.21875c-10.1875 8.191406-22.160156 13.957031-34.882812 16.832031v-158.050781h60v108.019531c-5.507812 12.933594-14.164062 24.382813-25.117188 33.199219zm30.308594-161.21875h-70.386718l-144-180h358.386718zm200.808594-230c0 16.542969-13.457031 30-30 30h-416.171875c-14.242187 0-25.828125-11.585938-25.828125-25.828125v-14.171875h472zm0 0"/>
-                                            <path d="m270.519531 237.808594c4.304688 3.441406 10.597657 2.761718 14.058594-1.5625l72.339844-90.410156c3.449219-4.3125 2.753906-10.605469-1.558594-14.054688s-10.605469-2.753906-14.058594 1.558594l-72.339843 90.410156c-3.449219 4.3125-2.75 10.605469 1.558593 14.058594zm0 0"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
-                    
                 </div>
 
                 <!-- FILTERED TABLE -->
-                <div class="w-auto d-flex flex-column justify-content-center my-3">
-                    <div class="d-flex justify-content-center">
+                <div class="row my-3">
+                    <div class="col-10 p-0">
                         <div class="table-responsive">
                             <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
                                 <thead>
@@ -1091,8 +1088,22 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div class="col-2 px-1 m-0">
+                        <select name="customer_name" class="w-100" id="customer_nameFilter">
+                            <option value="<?php echo 'All Customers' ?>">
+                                All Customers
+                            </option>
+                            <?php for ($i = 0; $i < count($customers) ; $i++): ?>
+                                <option value="<?php echo $customers[$i]['customer_name'] ?>">
+                                    <?php echo $customers[$i]['customer_name'] ?>
+                                </option>
+                            <?php endfor; ?>
+                        </select>
                     </div> 
                 </div>
+
+                
             <?php endif; ?>
             
         <?php endif;?>

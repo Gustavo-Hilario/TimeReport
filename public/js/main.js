@@ -21,5 +21,11 @@ $( document ).ready(function() {
         } else {
             $(this).parent().siblings('input').attr('value', '1')
         } 
-    });   
+    });
+
+    $( "#customer_nameFilter" ).change(function () {
+        var customer_name =$(this).val();
+        $("#filteringAllCustomersForm input[name=customer_name]").val(customer_name);
+    });
+    
 });

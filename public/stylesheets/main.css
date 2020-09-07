@@ -98,3 +98,9 @@ table{
     .slider.round:before {
         border-radius: 50%;
     }
+
+/* ALL CUSTOMER REPORT  */
+    /* FILTERING FORM */
+    #filteringAllCustomersForm input[type=date]{
+        width: 100%;
+    }
