@@ -19,7 +19,7 @@
 
     <title>Time Report</title>
 </head>
-<body>
+<body class="b-light">
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
@@ -27,8 +27,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
     <div class="container mt-5">
-        <!-- TABLE -->
-        <div class="w-100" id="customersTable">
+        <!-- CUSTOMERS TABLE -->
+        <div id="customersTable">
             <?php
                 $sql = "SELECT * FROM customers;";
                 $sqlCustomerResult = mysqli_query($mysqli, $sql);
@@ -49,16 +49,14 @@
                     $customer_sums = [];
                 }
             ?>
-            <div class="d-flex justify-content-center">
+            <div class="table-responsive">
                 <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
-                    <div class="d-flex align-items-center">
-                        <thead>
-                            <th>Customer ID</th>
-                            <th>Customer Name</th>
-                            <th>Actions</th>
-                            <th>Hour Total</th>
-                        </thead>
-                    </div>
+                    <thead>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Actions</th>
+                        <th>Hour Total</th>
+                    </thead>
                     <tbody>
                         <?php for ($i = 0; $i < count($customer); $i++): ?>
                             <tr>
@@ -100,7 +98,7 @@
                                             </svg>
                                         </a>
 
-                                        <a href="index.php?worklist=<?php echo $customer[$i]['customer_id'] ?>" class="worklist">
+                                        <a href="index.php?worklist=<?php echo $customer[$i]['customer_id'] ?>" class="worklistButton">
                                             <svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 25 25" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
                                                 <g transform="translate(0 -1028.4)">
                                                 <path d="m3 1035.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#16a085"/>
@@ -115,7 +113,7 @@
                                             </svg>
                                         </a>
                                             
-                                        <a href="index.php?customerReport=<?php echo $customer[$i]['customer_id'] ?>&customer=<?php echo $customer[$i]['customer_name'] ?>" class="customerReport">
+                                        <a href="index.php?customerReport=<?php echo $customer[$i]['customer_id'] ?>&customer=<?php echo $customer[$i]['customer_name'] ?>" class="customerReportButton">
                                             <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 128 128">
                                                 <defs><style>.cls-1{fill:#2d3e50;}.cls-2{fill:#2e79bd;}</style></defs>
                                                 <title>b</title>
@@ -146,7 +144,7 @@
             </div>
 
             <!-- BUTTONS -->
-            <div class="w-50 d-flex justify-content-around mx-auto mt-4">
+            <div class="w-100 d-flex justify-content-around mx-auto mt-4">
                 <button id="newCustomerButton" class="btn btn-sm btn-outline-success" >Add New Customer</button>
                 <form action="index.php" method="GET">
                     <button type="submit" class="btn btn-sm btn-outline-success" value="true" name="allCustomersReport">All Customer Report</button>
@@ -156,87 +154,80 @@
 
         <!-- ADD NEW CUSTOMER FORM -->
         <div id="addNewCustomerDiv" class="d-none">
-            <div class="w-50 d-flex justify-content-around mx-auto mt-4">
-                <form action="process.php" method="POST" class="w-100 mt-5" id="addNewCustomerForm">
-                    <fieldset class="border border-primary">
-                        <legend class="ml-5 w-auto">Group Name</legend>
-
-                        <div class="form-group d-flex justify-content-center align-items-center">
-                            <label for="name" class="mr-2">Customer Name</label>
-                            <input type="text" id="name" name="name" required><br><br>
-                        </div>
-                        
-                        <div class="d-flex justify-content-center align-items-center my-3">
-                            <button type="submit" class="btn btn-sm btn-outline-success" name="saveNewCustomer">Add New Customer</button>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
-
-        <!-- ADD WORK FORM -->
-        <?php if(isset($_GET['addWork'])): ?>
-            <?php
-                $customer_id = $_GET['addWork'];
-                $sqlAddWork = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
-                $sqlAddWorkResult = mysqli_query($mysqli, $sqlAddWork);
-            ?>
-            <div id="addWorkForm" class="">
-                <div class="w-50 d-flex justify-content-around mx-auto mt-4">
-                    <form action="process.php" method="POST" class="w-100 mt-5">
+            <div class="row d-flex mt-4">
+                <div class="col-8 offset-2 col-md-6 offset-md-3 d-flex justify-content-around mx-auto mt-4">
+                    <form action="process.php" method="POST" class="w-100 mt-5" id="addNewCustomerForm">
                         <fieldset class="border border-primary">
-                            <legend class="ml-5 w-auto">Add Work</legend>
+                            <legend class="ml-5 w-auto">Group Name</legend>
 
-                            <div class="text-center">
-                                <label for="work_date" class="mr-2">Date</label>
-                                <input type="date" id="work_date" name="work_date" placeholder="2020-20-02" required>
-                                <label for="work_minutes" class="mr-2">Worked Time in Minutes</label>
-                                <input type="number" id="work_minutes" name="work_minutes" placeholder="60" required>
+                            <div class="form-group row p-3 text-center p-lg-1 m-0">
+                                <div class="col-12 col-lg-4 col-xl-5 d-flex justify-content-center align-items-center">
+                                    <label for="name" class="mr-2">Customer Name</label>
+                                </div>
+                                <div class="col-12 col-lg-8 col-xl-7 d-flex align-items-center">
+                                    <input type="text" id="name" name="name" required class="form-control">
+                                </div>
                             </div>
                             
-                            <select name="worklistID" required>
-                                <?php while ($worklist = mysqli_fetch_assoc($sqlAddWorkResult)): ?>
-                                    <?php if($worklist['worklist_active'] == 1): ?>
-                                        <option value="<?php echo $worklist['worklist_id'] ?>"><?php echo $worklist['worklist_name'] ?></option>
-                                    <?php endif; ?>
-                                <?php endwhile; ?>
-                            </select>
-                            
                             <div class="d-flex justify-content-center align-items-center my-3">
-                                <button type="submit" class="btn btn-sm btn-outline-success" name="saveNewWork">Add Work</button>
+                                <button type="submit" class="btn btn-sm btn-outline-success" name="saveNewCustomer">Add New Customer</button>
                             </div>
                         </fieldset>
                     </form>
                 </div>
             </div>
-        <?php endif; ?> 
-
-        <!-- TABLE OF WORKS-->
-        <div class="container mt-5 d-none">
-            <div class="w-100 d-flex justify-content-center">
-                <table class="text-center border bg-dark text-white">
-                    <thead>
-                        <th>Work ID</th>
-                        <th>Worklist ID</th>
-                        <th>Work Date</th>
-                        <th>Work Minutes</th>
-                    </thead>
-
-                    <?php foreach ($works as $key => $work): ?>
-                        <tr>
-                            <td><?php echo $work['work_id'] ?></td>
-                            <td><?php echo $work['worklist_id'] ?></td>
-                            <td><?php echo $work['work_date'] ?></td>
-                            <td><?php echo $work['work_minutes'] ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                        
-                </table>
-            </div>
         </div>
+        
+        <?php if(isset($_GET['addWork'])): ?>
+            <!-- ADD WORK FORM -->
+            <?php
+                $customer_id = $_GET['addWork'];
+                $sqlAddWork = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
+                $sqlAddWorkResult = mysqli_query($mysqli, $sqlAddWork);
+            ?>
+            <div id="addWorkForm">
+                <div class="row d-flex mt-4">
+                    <div class="col-8 offset-2 col-lg-6 offset-lg-3">
+                        <form action="process.php" method="POST" class="w-100 mt-5">
+                            <fieldset class="border border-primary">
+                                <legend class="ml-5 w-auto">Add Work</legend>
 
-        <!-- TABLE OF WORKLIST-->
+                                <div class="text-center">
+                                    <div class="form-group m-0">
+                                        <label for="work_date" class="mr-2">Date</label>
+                                        <input type="date" id="work_date" name="work_date" placeholder="2020-20-02" required>
+                                    </div>
+
+                                    <div class="form-group row py-3 text-center m-0">
+                                        <div class="col-12 col-md-9 pr-md-0 col-lg-8 ">
+                                            <label for="work_minutes" class="mr-2">Worked Time in Minutes</label>
+                                        </div>
+                                        <div class="col-12 col-md-3 pl-md-0 col-lg-4 ">
+                                            <input type="number" id="work_minutes" class="w-75" name="work_minutes" placeholder="60" required>
+                                        </div>
+                                    </div>
+
+                                    <select name="worklistID" required>
+                                        <?php while ($worklist = mysqli_fetch_assoc($sqlAddWorkResult)): ?>
+                                            <?php if($worklist['worklist_active'] == 1): ?>
+                                                <option value="<?php echo $worklist['worklist_id'] ?>"><?php echo $worklist['worklist_name'] ?></option>
+                                            <?php endif; ?>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+                                
+                                <div class="d-flex justify-content-center align-items-center my-3">
+                                    <button type="submit" class="btn btn-sm btn-outline-success" name="saveNewWork">Add Work</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?> 
+        
         <?php if(isset($_GET['worklist'])): ?>
+            <!-- TABLE OF WORKLIST-->
             <?php 
                 $customer_id = $_GET['worklist'];
 
@@ -260,101 +251,103 @@
             <div class="w-auto d-flex flex-column justify-content-center my-5">
                 <?php if($sqlWorklistResultCheck): ?>
                     <div class="d-flex justify-content-center">
-                        <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
-                            <thead>
-                                <th>Worklist ID</th>
-                                <th>Worklist Name</th>
-                                <th>Total Hours</th>
-                                <th>Worked Hours</th>
-                                <th>Available Hours</th>
-                                <th>Active (Y/N)</th>
-                            </thead>
-                            <?php 
-                                while ($row = mysqli_fetch_assoc($sqlWorklistResult)){
-                                    $worklist[] = $row;
-                                };
-                                while ($row = mysqli_fetch_assoc($sqlWorklistViewResult)){
-                                    $worklistView[] = $row;
-                                };
-                            ?>
-                            <tbody>
-                                <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
-                                    <tr>
-                                        <td><?php echo $worklist[$i]['worklist_id'] ?></td>
-                                        <td><?php echo $worklist[$i]['worklist_name'] ?></td>
-                                        <td><?php echo round($worklist[$i]['worklist_total_minutes']/60, 1) ?></td>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
+                                <thead>
+                                    <th>Worklist ID</th>
+                                    <th>Worklist Name</th>
+                                    <th>Total Hours</th>
+                                    <th>Worked Hours</th>
+                                    <th>Available Hours</th>
+                                    <th>Active (Y/N)</th>
+                                </thead>
+                                <?php 
+                                    while ($row = mysqli_fetch_assoc($sqlWorklistResult)){
+                                        $worklist[] = $row;
+                                    };
+                                    while ($row = mysqli_fetch_assoc($sqlWorklistViewResult)){
+                                        $worklistView[] = $row;
+                                    };
+                                ?>
+                                <tbody>
+                                    <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                        <tr>
+                                            <td><?php echo $worklist[$i]['worklist_id'] ?></td>
+                                            <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                            <td><?php echo round($worklist[$i]['worklist_total_minutes']/60, 1) ?></td>
 
-                                        <?php $foundWorklistViewData = false;?>
-                                        <?php if(isset($worklistView)): ?>
-                                            <?php for ($j = 0; $j < count($worklistView) ; $j++): ?>
-                                                <?php if($worklist[$i]['worklist_id'] == $worklistView[$j]['worklist_id']): ?>
-                                                    <td><?php echo round($worklistView[$j]['worklist_worked_minutes']/60,1) ?></td>
-                                                    <td><?php echo round($worklistView[$j]['worklist_remaining_minutes']/60,1) ?></td>
+                                            <?php $foundWorklistViewData = false;?>
+                                            <?php if(isset($worklistView)): ?>
+                                                <?php for ($j = 0; $j < count($worklistView) ; $j++): ?>
+                                                    <?php if($worklist[$i]['worklist_id'] == $worklistView[$j]['worklist_id']): ?>
+                                                        <td><?php echo round($worklistView[$j]['worklist_worked_minutes']/60,1) ?></td>
+                                                        <td><?php echo round($worklistView[$j]['worklist_remaining_minutes']/60,1) ?></td>
 
-                                                    <?php
-                                                        $foundWorklistViewData = true;
-                                                        $totals_hours += $worklist[$i]['worklist_total_minutes']; 
-                                                        $totals_worked += $worklistView[$j]['worklist_worked_minutes']; 
-                                                        $totals_available += $worklistView[$j]['worklist_remaining_minutes'];
-                                                        
-                                                        if($worklist[$i]['worklist_active'] == 1){
-                                                            $totals_active_hours += $worklist[$i]['worklist_total_minutes']; 
-                                                            $totals_active_worked += $worklistView[$j]['worklist_worked_minutes']; 
-                                                            $totals_active_available += $worklistView[$j]['worklist_remaining_minutes'];
-                                                        }
-                                                    ?>
-                                                <?php endif; ?>
-                                            <?php endfor; ?>
-                                        <?php endif; ?>
-                                        <?php if($foundWorklistViewData == false):?>
-                                            <td colspan="2"><?php echo 'ADD WORK'; ?></td>
-                                        <?php endif; ?>
+                                                        <?php
+                                                            $foundWorklistViewData = true;
+                                                            $totals_hours += $worklist[$i]['worklist_total_minutes']; 
+                                                            $totals_worked += $worklistView[$j]['worklist_worked_minutes']; 
+                                                            $totals_available += $worklistView[$j]['worklist_remaining_minutes'];
+                                                            
+                                                            if($worklist[$i]['worklist_active'] == 1){
+                                                                $totals_active_hours += $worklist[$i]['worklist_total_minutes']; 
+                                                                $totals_active_worked += $worklistView[$j]['worklist_worked_minutes']; 
+                                                                $totals_active_available += $worklistView[$j]['worklist_remaining_minutes'];
+                                                            }
+                                                        ?>
+                                                    <?php endif; ?>
+                                                <?php endfor; ?>
+                                            <?php endif; ?>
+                                            <?php if($foundWorklistViewData == false):?>
+                                                <td colspan="2"><?php echo 'ADD WORK'; ?></td>
+                                            <?php endif; ?>
 
-                                        <td>
-                                            <form action="process.php" method="POST" class="changeActiveStatusFrom">
-                                                <input type="hidden" value="<?php echo $worklist[$i]['worklist_name'] ?>" name="worklist_name">
-                                                <input type="hidden" value="<?php echo $_GET['worklist'] ?>" name="customer_id">
-                                                
-                                                <button type="submit" class="btn" name="changeActiveStatus">
-                                                <?php if($worklist[$i]['worklist_active'] == 1): ?>
-                                                    <input type="hidden" value="0" name="activeNewStatus">
-                                                    <label class="switch">
-                                                        <input type="checkbox" checked>
-                                                        <span class="slider round"></span>
-                                                    </label>
-                                                    <?php else:?>
-                                                        <input type="hidden" value="1" name="activeNewStatus">
+                                            <td>
+                                                <form action="process.php" method="POST" class="changeActiveStatusFrom">
+                                                    <input type="hidden" value="<?php echo $worklist[$i]['worklist_name'] ?>" name="worklist_name">
+                                                    <input type="hidden" value="<?php echo $_GET['worklist'] ?>" name="customer_id">
+                                                    
+                                                    <button type="submit" class="btn" name="changeActiveStatus">
+                                                    <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                                        <input type="hidden" value="0" name="activeNewStatus">
                                                         <label class="switch">
-                                                            <input type="checkbox">
+                                                            <input type="checkbox" checked>
                                                             <span class="slider round"></span>
                                                         </label>
-                                                <?php endif; ?>
-                                                </button>
-                                            </form>
-                                        </td>
+                                                        <?php else:?>
+                                                            <input type="hidden" value="1" name="activeNewStatus">
+                                                            <label class="switch">
+                                                                <input type="checkbox">
+                                                                <span class="slider round"></span>
+                                                            </label>
+                                                    <?php endif; ?>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php endfor; ?>
+
+                                    <tr>
+                                        <td colspan="2">TOTALS</td>
+                                        <td><?php echo round($totals_hours/60,1); ?></td>
+                                        <td><?php echo round($totals_worked/60,1); ?></td>
+                                        <td><?php echo round($totals_available/60,1); ?></td>
+                                        <td>ALL</td>
                                     </tr>
-                                <?php endfor; ?>
+                                </tbody>
+                                
+
+                                
 
                                 <tr>
-                                    <td colspan="2">TOTALS</td>
-                                    <td><?php echo round($totals_hours/60,1); ?></td>
-                                    <td><?php echo round($totals_worked/60,1); ?></td>
-                                    <td><?php echo round($totals_available/60,1); ?></td>
-                                    <td>ALL</td>
+                                    <td colspan="2">TOTALS ACTIVE</td>
+                                    <td><?php echo round($totals_active_hours/60,1); ?></td>
+                                    <td><?php echo round($totals_active_worked/60,1); ?></td>
+                                    <td><?php echo round($totals_active_available/60,1); ?></td>
+                                    <td>ACTIVE</td>
                                 </tr>
-                            </tbody>
-                            
-
-                            
-
-                            <tr>
-                                <td colspan="2">TOTALS ACTIVE</td>
-                                <td><?php echo round($totals_active_hours/60,1); ?></td>
-                                <td><?php echo round($totals_active_worked/60,1); ?></td>
-                                <td><?php echo round($totals_active_available/60,1); ?></td>
-                                <td>ACTIVE</td>
-                            </tr>
-                        </table>
+                            </table>
+                        </div>
                     </div> 
                 <?php endif; ?>
 
@@ -400,8 +393,8 @@
             </div>
         <?php endif; ?>  
         
-        <!-- CUSTOMER REPORT -->
         <?php if(isset($_GET['customerReport'])): ?>
+            <!-- CUSTOMER REPORT -->
             <?php
                 $customer_id = $_GET['customerReport'];
                 $customer_name = $_GET['customer'];
@@ -457,33 +450,22 @@
                 ?>
 
                 <!-- FILTERING FORM -->
-                <div class="d-flex align-items-center mt-4">
-                    <div class="mr-5">
+                <div class="row mt-4">
+                    <div class="col-12 col-md-3 col-xl-2 d-flex justify-content-center align-items-center">
                         <h4 class="m-0"><?php echo $customer_name ?></h4>
                     </div>
-                    <div class="w-100">
+                    <div class="col-12 col-md-9 col-xl-10">
                         <form action="index.php" method="GET" class="filteringForm">
-                            <div class="d-flex justify-content-around align-items-center">
+                            <div class="row">
                                 <input type="hidden" value="<?php echo $customer_id?>" name="customerReport">
                                 <input type="hidden" value="<?php echo $customer_name?>" name="customer">
-                                <div class="">
+                                <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
                                     <input type="date" value="<?php echo $date_from ?>" name="date_from">
                                 </div>
-                                <div class="">
+                                <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
                                     <input type="date" value="<?php echo $date_to ?>" name="date_to">
                                 </div>
-                                <div class="">
-                                    <button type="submit" class="btn p-0">
-                                        <svg viewBox="0 -26 512 512" xmlns="http://www.w3.org/2000/svg" height="40" width="40">
-                                            <path d="m56 70 160 200v180l6.878906-1.148438c16.492188-2.75 31.660156-9.703124 44.269532-19.839843 12.613281-10.152344 22.640624-23.492188 28.851562-39.011719v-120l160-200zm0 0" fill="#e87288"/>
-                                            <path d="m502 10v20c0 22.089844-17.910156 40-40 40-51.355469 0-350.152344 0-416.171875 0-19.789063 0-35.828125-16.039062-35.828125-35.828125v-24.171875zm0 0" fill="#fafaff"/>
-                                            <path d="m376 120c5.519531 0 10-4.480469 10-10s-4.480469-10-10-10-10 4.480469-10 10 4.480469 10 10 10zm0 0"/>
-                                            <path d="m502 0h-492c-5.523438 0-10 4.476562-10 10v24.171875c0 25.269531 20.558594 45.828125 45.828125 45.828125h5.367187l154.804688 193.507812v176.492188c0 6.1875 5.5625 10.882812 11.648438 9.863281l6.875-1.148437c17.867187-2.980469 34.773437-10.558594 48.898437-21.914063 20.832031-16.769531 32.578125-40.902343 32.578125-46.800781v-116.492188l154.804688-193.507812h1.195312c27.570312 0 50-22.429688 50-50v-20c0-5.523438-4.476562-10-10-10zm-241.117188 421.21875c-10.1875 8.191406-22.160156 13.957031-34.882812 16.832031v-158.050781h60v108.019531c-5.507812 12.933594-14.164062 24.382813-25.117188 33.199219zm30.308594-161.21875h-70.386718l-144-180h358.386718zm200.808594-230c0 16.542969-13.457031 30-30 30h-416.171875c-14.242187 0-25.828125-11.585938-25.828125-25.828125v-14.171875h472zm0 0"/>
-                                            <path d="m270.519531 237.808594c4.304688 3.441406 10.597657 2.761718 14.058594-1.5625l72.339844-90.410156c3.449219-4.3125 2.753906-10.605469-1.558594-14.054688s-10.605469-2.753906-14.058594 1.558594l-72.339843 90.410156c-3.449219 4.3125-2.75 10.605469 1.558593 14.058594zm0 0"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="">
+                                <div class="col-8 col-xl-4 d-flex mt-2">
                                     <select name="worklist_name" id="">
                                         <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
                                             <?php if($worklist[$i]['worklist_active'] == 1): ?>
@@ -497,28 +479,104 @@
                                         </option>
                                     </select>
                                 </div>
+                                <div class="col-4 col-xl-2 d-flex mt-2">
+                                    <button type="submit" class="btn p-0">
+                                        <svg viewBox="0 -26 512 512" xmlns="http://www.w3.org/2000/svg" height="40" width="40">
+                                            <path d="m56 70 160 200v180l6.878906-1.148438c16.492188-2.75 31.660156-9.703124 44.269532-19.839843 12.613281-10.152344 22.640624-23.492188 28.851562-39.011719v-120l160-200zm0 0" fill="#e87288"/>
+                                            <path d="m502 10v20c0 22.089844-17.910156 40-40 40-51.355469 0-350.152344 0-416.171875 0-19.789063 0-35.828125-16.039062-35.828125-35.828125v-24.171875zm0 0" fill="#fafaff"/>
+                                            <path d="m376 120c5.519531 0 10-4.480469 10-10s-4.480469-10-10-10-10 4.480469-10 10 4.480469 10 10 10zm0 0"/>
+                                            <path d="m502 0h-492c-5.523438 0-10 4.476562-10 10v24.171875c0 25.269531 20.558594 45.828125 45.828125 45.828125h5.367187l154.804688 193.507812v176.492188c0 6.1875 5.5625 10.882812 11.648438 9.863281l6.875-1.148437c17.867187-2.980469 34.773437-10.558594 48.898437-21.914063 20.832031-16.769531 32.578125-40.902343 32.578125-46.800781v-116.492188l154.804688-193.507812h1.195312c27.570312 0 50-22.429688 50-50v-20c0-5.523438-4.476562-10-10-10zm-241.117188 421.21875c-10.1875 8.191406-22.160156 13.957031-34.882812 16.832031v-158.050781h60v108.019531c-5.507812 12.933594-14.164062 24.382813-25.117188 33.199219zm30.308594-161.21875h-70.386718l-144-180h358.386718zm200.808594-230c0 16.542969-13.457031 30-30 30h-416.171875c-14.242187 0-25.828125-11.585938-25.828125-25.828125v-14.171875h472zm0 0"/>
+                                            <path d="m270.519531 237.808594c4.304688 3.441406 10.597657 2.761718 14.058594-1.5625l72.339844-90.410156c3.449219-4.3125 2.753906-10.605469-1.558594-14.054688s-10.605469-2.753906-14.058594 1.558594l-72.339843 90.410156c-3.449219 4.3125-2.75 10.605469 1.558593 14.058594zm0 0"/>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
-                    
                 </div>
 
                 <!-- FILTERED TABLE -->
                 <div class="w-auto d-flex flex-column justify-content-center my-3">
                     <div class="d-flex justify-content-center">
-                        <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
-                            <thead>
-                                <th>Work Name</th>
-                                <th>Date</th>
-                                <th>Worked Hours</th>
-                                <th>Actions</th>
-                            </thead>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
+                                <thead>
+                                    <th>Work Name</th>
+                                    <th>Date</th>
+                                    <th>Worked Hours</th>
+                                    <th>Actions</th>
+                                </thead>
 
-                            <tbody>
-                                <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
-                                    <?php if($worklist[$i]['worklist_active'] == 1): ?>
-                                        <?php if(isset($worklist_name) && $worklist_name !== 'All works'): ?>
-                                            <?php if($worklist[$i]['worklist_name'] == $worklist_name): ?>
+                                <tbody>
+                                    <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                        <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                            <?php if(isset($worklist_name) && $worklist_name !== 'All works'): ?>
+                                                <?php if($worklist[$i]['worklist_name'] == $worklist_name): ?>
+                                                    <?php for ($j = 0; $j < count($work) ; $j++): ?>
+                                                        <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
+                                                            <?php if( $date_from <= $work[$j]['work_date']): ?>
+                                                                <?php if( $date_to >= $work[$j]['work_date']): ?>
+                                                                    <?php
+                                                                        $total_worked_hours += $work[$j]['work_minutes'];
+                                                                    ?>
+                                                                    <tr>
+                                                                        <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                                                        <td><?php echo $work[$j]['work_date'] ?></td>
+                                                                        <td><?php echo round($work[$j]['work_minutes']/60, 3) ?></td>
+                                                                        <form action="process.php" method="POST" class="deleteWorkForm">
+                                                                            <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
+                                                                            <td>
+                                                                                <button type="submit" class="btn p-0" name="deleteWork">
+                                                                                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="32" width="32" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                                                                                        <style type="text/css">
+                                                                                            .st0{fill:url(#SVGID_1_);}
+                                                                                            .st1{fill:url(#SVGID_2_);}
+                                                                                            .st2{fill:url(#SVGID_3_);}
+                                                                                            .st3{fill:url(#SVGID_4_);}
+                                                                                            .st4{fill:url(#SVGID_5_);}
+                                                                                            .st5{fill:url(#SVGID_6_);}
+                                                                                            .st6{fill:url(#SVGID_7_);}
+                                                                                            .st7{fill:url(#SVGID_8_);}
+                                                                                            .st8{fill:url(#SVGID_9_);}
+                                                                                            .st9{fill:url(#SVGID_10_);}
+                                                                                            .st10{fill:url(#SVGID_11_);}
+                                                                                            .st11{fill:url(#SVGID_12_);}
+                                                                                            .st12{fill:url(#SVGID_13_);}
+                                                                                            .st13{fill:url(#SVGID_14_);}
+                                                                                            .st14{fill:url(#SVGID_15_);}
+                                                                                            .st15{fill:url(#SVGID_16_);}
+                                                                                            .st16{fill:url(#SVGID_17_);}
+                                                                                            .st17{fill:url(#SVGID_18_);}
+                                                                                            .st18{fill:url(#SVGID_19_);}
+                                                                                            .st19{fill:url(#SVGID_20_);}
+                                                                                        </style>
+                                                                                        <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
+                                                                                            <stop  offset="0" style="stop-color:#1245C6"/>
+                                                                                            <stop  offset="1" style="stop-color:#9909B7"/>
+                                                                                        </linearGradient>
+                                                                                        <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
+                                                                                        C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
+                                                                                        c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
+                                                                                        c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
+                                                                                        c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
+                                                                                        c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
+                                                                                        M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
+                                                                                        c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
+                                                                                        c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
+                                                                                        c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
+                                                                                        c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
+                                                                                        v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
+                                                                                    </svg>
+                                                                                </button>
+                                                                            </td>
+                                                                        </form>
+                                                                    </tr>
+                                                                <?php endif; ?>
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
+                                                    <?php endfor; ?>
+                                                <?php endif; ?>
+                                            <?php else: ?>
                                                 <?php for ($j = 0; $j < count($work) ; $j++): ?>
                                                     <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
                                                         <?php if( $date_from <= $work[$j]['work_date']): ?>
@@ -529,7 +587,7 @@
                                                                 <tr>
                                                                     <td><?php echo $worklist[$i]['worklist_name'] ?></td>
                                                                     <td><?php echo $work[$j]['work_date'] ?></td>
-                                                                    <td><?php echo round($work[$j]['work_minutes']/60, 3) ?></td>
+                                                                    <td><?php echo round($work[$j]['work_minutes']/60, 3); ?></td>
                                                                     <form action="process.php" method="POST" class="deleteWorkForm">
                                                                         <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
                                                                         <td>
@@ -583,88 +641,24 @@
                                                     <?php endif; ?>
                                                 <?php endfor; ?>
                                             <?php endif; ?>
-                                        <?php else: ?>
-                                            <?php for ($j = 0; $j < count($work) ; $j++): ?>
-                                                <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
-                                                    <?php if( $date_from <= $work[$j]['work_date']): ?>
-                                                        <?php if( $date_to >= $work[$j]['work_date']): ?>
-                                                            <?php
-                                                                $total_worked_hours += $work[$j]['work_minutes'];
-                                                            ?>
-                                                            <tr>
-                                                                <td><?php echo $worklist[$i]['worklist_name'] ?></td>
-                                                                <td><?php echo $work[$j]['work_date'] ?></td>
-                                                                <td><?php echo round($work[$j]['work_minutes']/60, 3); ?></td>
-                                                                <form action="process.php" method="POST" class="deleteWorkForm">
-                                                                    <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
-                                                                    <td>
-                                                                        <button type="submit" class="btn p-0" name="deleteWork">
-                                                                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="32" width="32" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-                                                                                <style type="text/css">
-                                                                                    .st0{fill:url(#SVGID_1_);}
-                                                                                    .st1{fill:url(#SVGID_2_);}
-                                                                                    .st2{fill:url(#SVGID_3_);}
-                                                                                    .st3{fill:url(#SVGID_4_);}
-                                                                                    .st4{fill:url(#SVGID_5_);}
-                                                                                    .st5{fill:url(#SVGID_6_);}
-                                                                                    .st6{fill:url(#SVGID_7_);}
-                                                                                    .st7{fill:url(#SVGID_8_);}
-                                                                                    .st8{fill:url(#SVGID_9_);}
-                                                                                    .st9{fill:url(#SVGID_10_);}
-                                                                                    .st10{fill:url(#SVGID_11_);}
-                                                                                    .st11{fill:url(#SVGID_12_);}
-                                                                                    .st12{fill:url(#SVGID_13_);}
-                                                                                    .st13{fill:url(#SVGID_14_);}
-                                                                                    .st14{fill:url(#SVGID_15_);}
-                                                                                    .st15{fill:url(#SVGID_16_);}
-                                                                                    .st16{fill:url(#SVGID_17_);}
-                                                                                    .st17{fill:url(#SVGID_18_);}
-                                                                                    .st18{fill:url(#SVGID_19_);}
-                                                                                    .st19{fill:url(#SVGID_20_);}
-                                                                                </style>
-                                                                                <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
-                                                                                    <stop  offset="0" style="stop-color:#1245C6"/>
-                                                                                    <stop  offset="1" style="stop-color:#9909B7"/>
-                                                                                </linearGradient>
-                                                                                <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
-                                                                                C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
-                                                                                c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
-                                                                                c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
-                                                                                c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
-                                                                                c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
-                                                                                M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
-                                                                                c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
-                                                                                c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
-                                                                                c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
-                                                                                c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
-                                                                                v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
-                                                                            </svg>
-                                                                        </button>
-                                                                    </td>
-                                                                </form>
-                                                            </tr>
-                                                        <?php endif; ?>
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
-                                            <?php endfor; ?>
                                         <?php endif; ?>
-                                    <?php endif; ?>
-                                <?php endfor; ?>
-                                <tr>
-                                    <td colspan="2">Total Worked Hours</td>
-                                    <td colspan="2"><?php echo round($total_worked_hours/60,2).' hours'; ?></td>
-                                </tr>
-                            </tbody>
+                                    <?php endfor; ?>
+                                    <tr>
+                                        <td colspan="2">Total Worked Hours</td>
+                                        <td colspan="2"><?php echo round($total_worked_hours/60,2).' hours'; ?></td>
+                                    </tr>
+                                </tbody>
 
-                        </table>
+                            </table>
+                        </div>
                     </div> 
                 </div>
             <?php endif; ?>
             
         <?php endif;?>
 
-        <!-- ALL CUSTOMER REPORT -->
         <?php if(isset($_GET['allCustomersReport'])): ?>
+            <!-- ALL CUSTOMER REPORT -->
             <?php
                 $total_worked_hours = 0;
 
@@ -725,32 +719,21 @@
                 ?>
 
                 <!-- FILTERING FORM -->
-                <div class="d-flex align-items-center">
-                    <div class="mr-5">
+                <div class="row mt-4">
+                    <div class="col-12 col-md-3 col-xl-2 d-flex justify-content-center align-items-center">
                         <h4 class="m-0"><?php echo $customer_name ?></h4>
                     </div>
-                    <div class="w-100">
+                    <div class="col-12 col-md-9 col-xl-10">
                         <form action="index.php" method="GET" class="filteringForm">
-                            <div class="d-flex justify-content-around align-items-center">
+                            <div class="row">
                                 <input type="hidden" value="true" name="allCustomersReport">
-                                <div class="">
+                                <div class="col-6 col-md-6 col-xl-3 p-xl-0 mx-xl-0 d-flex mt-2">
                                     <input type="date" value="<?php echo $date_from ?>" name="date_from">
                                 </div>
-                                <div class="">
+                                <div class="col-6 col-md-6 col-xl-3 p-xl-0 mx-xl-0 d-flex mt-2">
                                     <input type="date" value="<?php echo $date_to ?>" name="date_to">
                                 </div>
-                                <div class="">
-                                    <button type="submit" class="btn p-0">
-                                        <svg viewBox="0 -26 512 512" xmlns="http://www.w3.org/2000/svg" height="40" width="40">
-                                            <path d="m56 70 160 200v180l6.878906-1.148438c16.492188-2.75 31.660156-9.703124 44.269532-19.839843 12.613281-10.152344 22.640624-23.492188 28.851562-39.011719v-120l160-200zm0 0" fill="#e87288"/>
-                                            <path d="m502 10v20c0 22.089844-17.910156 40-40 40-51.355469 0-350.152344 0-416.171875 0-19.789063 0-35.828125-16.039062-35.828125-35.828125v-24.171875zm0 0" fill="#fafaff"/>
-                                            <path d="m376 120c5.519531 0 10-4.480469 10-10s-4.480469-10-10-10-10 4.480469-10 10 4.480469 10 10 10zm0 0"/>
-                                            <path d="m502 0h-492c-5.523438 0-10 4.476562-10 10v24.171875c0 25.269531 20.558594 45.828125 45.828125 45.828125h5.367187l154.804688 193.507812v176.492188c0 6.1875 5.5625 10.882812 11.648438 9.863281l6.875-1.148437c17.867187-2.980469 34.773437-10.558594 48.898437-21.914063 20.832031-16.769531 32.578125-40.902343 32.578125-46.800781v-116.492188l154.804688-193.507812h1.195312c27.570312 0 50-22.429688 50-50v-20c0-5.523438-4.476562-10-10-10zm-241.117188 421.21875c-10.1875 8.191406-22.160156 13.957031-34.882812 16.832031v-158.050781h60v108.019531c-5.507812 12.933594-14.164062 24.382813-25.117188 33.199219zm30.308594-161.21875h-70.386718l-144-180h358.386718zm200.808594-230c0 16.542969-13.457031 30-30 30h-416.171875c-14.242187 0-25.828125-11.585938-25.828125-25.828125v-14.171875h472zm0 0"/>
-                                            <path d="m270.519531 237.808594c4.304688 3.441406 10.597657 2.761718 14.058594-1.5625l72.339844-90.410156c3.449219-4.3125 2.753906-10.605469-1.558594-14.054688s-10.605469-2.753906-14.058594 1.558594l-72.339843 90.410156c-3.449219 4.3125-2.75 10.605469 1.558593 14.058594zm0 0"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="">
+                                <div class="col-5 col-xl-2 d-flex mt-2">
                                     <select name="worklist_name" id="">
                                         <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
                                             <?php if($worklist[$i]['worklist_active'] == 1): ?>
@@ -764,7 +747,7 @@
                                         </option>
                                     </select>
                                 </div>
-                                <div class="">
+                                <div class="col-5 col-xl-2 d-flex mt-2">
                                     <select name="customer_name" id="">
                                         <?php for ($i = 0; $i < count($customers) ; $i++): ?>
                                             <option value="<?php echo $customers[$i]['customer_name'] ?>">
@@ -776,6 +759,17 @@
                                         </option>
                                     </select>
                                 </div>
+                                <div class="col-2 col-xl-2 d-flex mt-2">
+                                    <button type="submit" class="btn p-0">
+                                        <svg viewBox="0 -26 512 512" xmlns="http://www.w3.org/2000/svg" height="40" width="40">
+                                            <path d="m56 70 160 200v180l6.878906-1.148438c16.492188-2.75 31.660156-9.703124 44.269532-19.839843 12.613281-10.152344 22.640624-23.492188 28.851562-39.011719v-120l160-200zm0 0" fill="#e87288"/>
+                                            <path d="m502 10v20c0 22.089844-17.910156 40-40 40-51.355469 0-350.152344 0-416.171875 0-19.789063 0-35.828125-16.039062-35.828125-35.828125v-24.171875zm0 0" fill="#fafaff"/>
+                                            <path d="m376 120c5.519531 0 10-4.480469 10-10s-4.480469-10-10-10-10 4.480469-10 10 4.480469 10 10 10zm0 0"/>
+                                            <path d="m502 0h-492c-5.523438 0-10 4.476562-10 10v24.171875c0 25.269531 20.558594 45.828125 45.828125 45.828125h5.367187l154.804688 193.507812v176.492188c0 6.1875 5.5625 10.882812 11.648438 9.863281l6.875-1.148437c17.867187-2.980469 34.773437-10.558594 48.898437-21.914063 20.832031-16.769531 32.578125-40.902343 32.578125-46.800781v-116.492188l154.804688-193.507812h1.195312c27.570312 0 50-22.429688 50-50v-20c0-5.523438-4.476562-10-10-10zm-241.117188 421.21875c-10.1875 8.191406-22.160156 13.957031-34.882812 16.832031v-158.050781h60v108.019531c-5.507812 12.933594-14.164062 24.382813-25.117188 33.199219zm30.308594-161.21875h-70.386718l-144-180h358.386718zm200.808594-230c0 16.542969-13.457031 30-30 30h-416.171875c-14.242187 0-25.828125-11.585938-25.828125-25.828125v-14.171875h472zm0 0"/>
+                                            <path d="m270.519531 237.808594c4.304688 3.441406 10.597657 2.761718 14.058594-1.5625l72.339844-90.410156c3.449219-4.3125 2.753906-10.605469-1.558594-14.054688s-10.605469-2.753906-14.058594 1.558594l-72.339843 90.410156c-3.449219 4.3125-2.75 10.605469 1.558593 14.058594zm0 0"/>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -785,237 +779,21 @@
                 <!-- FILTERED TABLE -->
                 <div class="w-auto d-flex flex-column justify-content-center my-3">
                     <div class="d-flex justify-content-center">
-                        <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
-                            <thead>
-                                <th>Customer Name</th>
-                                <th>Work Name</th>
-                                <th>Date</th>
-                                <th>Worked Hours</th>
-                                <th>Actions</th>
-                            </thead>
-                            <tbody>
-                                <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
-                                    <?php if($worklist[$i]['worklist_active'] == 1): ?>
-                                        <?php if($customer_name == 'All Customers'): ?>
-                                            <?php if(isset($worklist_name) && $worklist_name == 'All works'): ?>
-                                                <!-- LOOP WORK AND PRINT DATA ACCORDINGLY WITH DATE -->
-                                                <?php for ($j = 0; $j < count($work) ; $j++): ?>
-                                                    <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
-                                                        <?php if( $date_from <= $work[$j]['work_date']): ?>
-                                                            <?php if( $date_to >= $work[$j]['work_date']): ?>
-                                                                <?php
-                                                                    $total_worked_hours += $work[$j]['work_minutes'];
-                                                                ?>
-                                                                <tr>
-                                                                    <?php for ($k = 0; $k < count($customers) ; $k++): ?>
-                                                                        <?php if( $customers[$k]['customer_id'] == $worklist[$i]['customer_id']): ?>
-                                                                            <td><?php echo $customers[$k]['customer_name'] ?></td>
-                                                                        <?php endif; ?>
-                                                                    <?php endfor; ?>
-                                                                    <td><?php echo $worklist[$i]['worklist_name'] ?></td>
-                                                                    <td><?php echo $work[$j]['work_date'] ?></td>
-                                                                    <td><?php echo round($work[$j]['work_minutes']/60, 3) ?></td>
-                                                                    <form action="process.php" method="POST" class="deleteWorkForm">
-                                                                        <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
-                                                                        <td>
-                                                                            <button type="submit" class="btn p-0" name="deleteWork">
-                                                                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="32" width="32" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-                                                                                    <style type="text/css">
-                                                                                        .st0{fill:url(#SVGID_1_);}
-                                                                                        .st1{fill:url(#SVGID_2_);}
-                                                                                        .st2{fill:url(#SVGID_3_);}
-                                                                                        .st3{fill:url(#SVGID_4_);}
-                                                                                        .st4{fill:url(#SVGID_5_);}
-                                                                                        .st5{fill:url(#SVGID_6_);}
-                                                                                        .st6{fill:url(#SVGID_7_);}
-                                                                                        .st7{fill:url(#SVGID_8_);}
-                                                                                        .st8{fill:url(#SVGID_9_);}
-                                                                                        .st9{fill:url(#SVGID_10_);}
-                                                                                        .st10{fill:url(#SVGID_11_);}
-                                                                                        .st11{fill:url(#SVGID_12_);}
-                                                                                        .st12{fill:url(#SVGID_13_);}
-                                                                                        .st13{fill:url(#SVGID_14_);}
-                                                                                        .st14{fill:url(#SVGID_15_);}
-                                                                                        .st15{fill:url(#SVGID_16_);}
-                                                                                        .st16{fill:url(#SVGID_17_);}
-                                                                                        .st17{fill:url(#SVGID_18_);}
-                                                                                        .st18{fill:url(#SVGID_19_);}
-                                                                                        .st19{fill:url(#SVGID_20_);}
-                                                                                    </style>
-                                                                                    <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
-                                                                                        <stop  offset="0" style="stop-color:#1245C6"/>
-                                                                                        <stop  offset="1" style="stop-color:#9909B7"/>
-                                                                                    </linearGradient>
-                                                                                    <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
-                                                                                    C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
-                                                                                    c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
-                                                                                    c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
-                                                                                    c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
-                                                                                    c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
-                                                                                    M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
-                                                                                    c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
-                                                                                    c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
-                                                                                    c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
-                                                                                    c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
-                                                                                    v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
-                                                                                </svg>
-                                                                            </button>
-                                                                        </td>
-                                                                    </form>
-                                                                </tr>
-                                                            <?php endif; ?>
-                                                        <?php endif; ?>
-                                                    <?php endif; ?>
-                                                <?php endfor; ?>
-                                            <?php else: ?>
-                                                <?php for ($j = 0; $j < count($work) ; $j++): ?>
-                                                    <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
-                                                        <?php if( $date_from <= $work[$j]['work_date']): ?>
-                                                            <?php if( $date_to >= $work[$j]['work_date']): ?>
-                                                                <?php
-                                                                    $total_worked_hours += $work[$j]['work_minutes'];
-                                                                ?>
-                                                                <tr>
-                                                                    <td><?php echo $worklist[$i]['worklist_name'] ?></td>
-                                                                    <td><?php echo $worklist[$i]['worklist_name'] ?></td>
-                                                                    <td><?php echo $work[$j]['work_date'] ?></td>
-                                                                    <td><?php echo round($work[$j]['work_minutes']/60, 3); ?></td>
-                                                                    <form action="process.php" method="POST" class="deleteWorkForm">
-                                                                        <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
-                                                                        <td>
-                                                                            <button type="submit" class="btn p-0" name="deleteWork">
-                                                                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="32" width="32" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-                                                                                    <style type="text/css">
-                                                                                        .st0{fill:url(#SVGID_1_);}
-                                                                                        .st1{fill:url(#SVGID_2_);}
-                                                                                        .st2{fill:url(#SVGID_3_);}
-                                                                                        .st3{fill:url(#SVGID_4_);}
-                                                                                        .st4{fill:url(#SVGID_5_);}
-                                                                                        .st5{fill:url(#SVGID_6_);}
-                                                                                        .st6{fill:url(#SVGID_7_);}
-                                                                                        .st7{fill:url(#SVGID_8_);}
-                                                                                        .st8{fill:url(#SVGID_9_);}
-                                                                                        .st9{fill:url(#SVGID_10_);}
-                                                                                        .st10{fill:url(#SVGID_11_);}
-                                                                                        .st11{fill:url(#SVGID_12_);}
-                                                                                        .st12{fill:url(#SVGID_13_);}
-                                                                                        .st13{fill:url(#SVGID_14_);}
-                                                                                        .st14{fill:url(#SVGID_15_);}
-                                                                                        .st15{fill:url(#SVGID_16_);}
-                                                                                        .st16{fill:url(#SVGID_17_);}
-                                                                                        .st17{fill:url(#SVGID_18_);}
-                                                                                        .st18{fill:url(#SVGID_19_);}
-                                                                                        .st19{fill:url(#SVGID_20_);}
-                                                                                    </style>
-                                                                                    <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
-                                                                                        <stop  offset="0" style="stop-color:#1245C6"/>
-                                                                                        <stop  offset="1" style="stop-color:#9909B7"/>
-                                                                                    </linearGradient>
-                                                                                    <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
-                                                                                    C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
-                                                                                    c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
-                                                                                    c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
-                                                                                    c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
-                                                                                    c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
-                                                                                    M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
-                                                                                    c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
-                                                                                    c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
-                                                                                    c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
-                                                                                    c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
-                                                                                    v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
-                                                                                </svg>
-                                                                            </button>
-                                                                        </td>
-                                                                    </form>
-                                                                </tr>
-                                                            <?php endif; ?>
-                                                        <?php endif; ?>
-                                                    <?php endif; ?>
-                                                <?php endfor; ?>
-                                            <?php endif; ?>
-
-                                        <?php else: ?>
-                                            <!-- GRAB customer_id -->
-                                            <?php for ($j = 0; $j < count($customers) ; $j++): ?>
-                                                <?php if($customers[$j]['customer_name'] == $customer_name): ?>
-                                                    <?php $customer_id = $customers[$j]['customer_id'] ?>
-                                                <?php endif; ?>
-                                            <?php endfor; ?>
-                                            <!-- Just keep going if this customer is the owner -->
-                                            <?php if($worklist[$i]['customer_id'] == $customer_id): ?>
-                                                <?php if($worklist_name == 'All works'): ?>
-                                                    <!-- Print table for all works that this customer have -->
-                                                    <?php for ($j = 0; $j < count($work) ; $j++): ?>
-                                                        <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
-                                                            <?php if( $date_from <= $work[$j]['work_date']): ?>
-                                                                <?php if( $date_to >= $work[$j]['work_date']): ?>
-                                                                    <?php
-                                                                        $total_worked_hours += $work[$j]['work_minutes'];
-                                                                    ?>
-                                                                    <tr>
-                                                                        <?php for ($k = 0; $k < count($customers) ; $k++): ?>
-                                                                            <?php if( $customers[$k]['customer_id'] == $worklist[$i]['customer_id']): ?>
-                                                                                <td><?php echo $customers[$k]['customer_name'] ?></td>
-                                                                            <?php endif; ?>
-                                                                        <?php endfor; ?>
-                                                                        <td><?php echo $worklist[$i]['worklist_name'] ?></td>
-                                                                        <td><?php echo $work[$j]['work_date'] ?></td>
-                                                                        <td><?php echo round($work[$j]['work_minutes']/60, 3) ?></td>
-                                                                        <form action="process.php" method="POST" class="deleteWorkForm">
-                                                                        <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
-                                                                        <td>
-                                                                            <button type="submit" class="btn p-0" name="deleteWork">
-                                                                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="32" width="32" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-                                                                                    <style type="text/css">
-                                                                                        .st0{fill:url(#SVGID_1_);}
-                                                                                        .st1{fill:url(#SVGID_2_);}
-                                                                                        .st2{fill:url(#SVGID_3_);}
-                                                                                        .st3{fill:url(#SVGID_4_);}
-                                                                                        .st4{fill:url(#SVGID_5_);}
-                                                                                        .st5{fill:url(#SVGID_6_);}
-                                                                                        .st6{fill:url(#SVGID_7_);}
-                                                                                        .st7{fill:url(#SVGID_8_);}
-                                                                                        .st8{fill:url(#SVGID_9_);}
-                                                                                        .st9{fill:url(#SVGID_10_);}
-                                                                                        .st10{fill:url(#SVGID_11_);}
-                                                                                        .st11{fill:url(#SVGID_12_);}
-                                                                                        .st12{fill:url(#SVGID_13_);}
-                                                                                        .st13{fill:url(#SVGID_14_);}
-                                                                                        .st14{fill:url(#SVGID_15_);}
-                                                                                        .st15{fill:url(#SVGID_16_);}
-                                                                                        .st16{fill:url(#SVGID_17_);}
-                                                                                        .st17{fill:url(#SVGID_18_);}
-                                                                                        .st18{fill:url(#SVGID_19_);}
-                                                                                        .st19{fill:url(#SVGID_20_);}
-                                                                                    </style>
-                                                                                    <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
-                                                                                        <stop  offset="0" style="stop-color:#1245C6"/>
-                                                                                        <stop  offset="1" style="stop-color:#9909B7"/>
-                                                                                    </linearGradient>
-                                                                                    <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
-                                                                                    C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
-                                                                                    c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
-                                                                                    c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
-                                                                                    c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
-                                                                                    c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
-                                                                                    M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
-                                                                                    c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
-                                                                                    c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
-                                                                                    c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
-                                                                                    c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
-                                                                                    v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
-                                                                                </svg>
-                                                                            </button>
-                                                                        </td>
-                                                                    </form>
-                                                                    </tr>
-                                                                <?php endif; ?>
-                                                            <?php endif; ?>
-                                                        <?php endif; ?>
-                                                    <?php endfor; ?>
-                                                <?php endif; ?>
-                                                <?php if($worklist[$i]['worklist_name'] == $worklist_name): ?>
-                                                    <!-- Just print table for this filtered worklist -->
+                        <div class="table-responsive">
+                            <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
+                                <thead>
+                                    <th>Customer Name</th>
+                                    <th>Work Name</th>
+                                    <th>Date</th>
+                                    <th>Worked Hours</th>
+                                    <th>Actions</th>
+                                </thead>
+                                <tbody>
+                                    <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
+                                        <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                            <?php if($customer_name == 'All Customers'): ?>
+                                                <?php if(isset($worklist_name) && $worklist_name == 'All works'): ?>
+                                                    <!-- LOOP WORK AND PRINT DATA ACCORDINGLY WITH DATE -->
                                                     <?php for ($j = 0; $j < count($work) ; $j++): ?>
                                                         <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
                                                             <?php if( $date_from <= $work[$j]['work_date']): ?>
@@ -1078,23 +856,241 @@
                                                                                     </svg>
                                                                                 </button>
                                                                             </td>
-                                                                    </form>
+                                                                        </form>
+                                                                    </tr>
+                                                                <?php endif; ?>
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
+                                                    <?php endfor; ?>
+                                                <?php else: ?>
+                                                    <?php for ($j = 0; $j < count($work) ; $j++): ?>
+                                                        <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
+                                                            <?php if( $date_from <= $work[$j]['work_date']): ?>
+                                                                <?php if( $date_to >= $work[$j]['work_date']): ?>
+                                                                    <?php
+                                                                        $total_worked_hours += $work[$j]['work_minutes'];
+                                                                    ?>
+                                                                    <tr>
+                                                                        <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                                                        <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                                                        <td><?php echo $work[$j]['work_date'] ?></td>
+                                                                        <td><?php echo round($work[$j]['work_minutes']/60, 3); ?></td>
+                                                                        <form action="process.php" method="POST" class="deleteWorkForm">
+                                                                            <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
+                                                                            <td>
+                                                                                <button type="submit" class="btn p-0" name="deleteWork">
+                                                                                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="32" width="32" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                                                                                        <style type="text/css">
+                                                                                            .st0{fill:url(#SVGID_1_);}
+                                                                                            .st1{fill:url(#SVGID_2_);}
+                                                                                            .st2{fill:url(#SVGID_3_);}
+                                                                                            .st3{fill:url(#SVGID_4_);}
+                                                                                            .st4{fill:url(#SVGID_5_);}
+                                                                                            .st5{fill:url(#SVGID_6_);}
+                                                                                            .st6{fill:url(#SVGID_7_);}
+                                                                                            .st7{fill:url(#SVGID_8_);}
+                                                                                            .st8{fill:url(#SVGID_9_);}
+                                                                                            .st9{fill:url(#SVGID_10_);}
+                                                                                            .st10{fill:url(#SVGID_11_);}
+                                                                                            .st11{fill:url(#SVGID_12_);}
+                                                                                            .st12{fill:url(#SVGID_13_);}
+                                                                                            .st13{fill:url(#SVGID_14_);}
+                                                                                            .st14{fill:url(#SVGID_15_);}
+                                                                                            .st15{fill:url(#SVGID_16_);}
+                                                                                            .st16{fill:url(#SVGID_17_);}
+                                                                                            .st17{fill:url(#SVGID_18_);}
+                                                                                            .st18{fill:url(#SVGID_19_);}
+                                                                                            .st19{fill:url(#SVGID_20_);}
+                                                                                        </style>
+                                                                                        <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
+                                                                                            <stop  offset="0" style="stop-color:#1245C6"/>
+                                                                                            <stop  offset="1" style="stop-color:#9909B7"/>
+                                                                                        </linearGradient>
+                                                                                        <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
+                                                                                        C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
+                                                                                        c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
+                                                                                        c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
+                                                                                        c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
+                                                                                        c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
+                                                                                        M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
+                                                                                        c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
+                                                                                        c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
+                                                                                        c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
+                                                                                        c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
+                                                                                        v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
+                                                                                    </svg>
+                                                                                </button>
+                                                                            </td>
+                                                                        </form>
                                                                     </tr>
                                                                 <?php endif; ?>
                                                             <?php endif; ?>
                                                         <?php endif; ?>
                                                     <?php endfor; ?>
                                                 <?php endif; ?>
+
+                                            <?php else: ?>
+                                                <!-- GRAB customer_id -->
+                                                <?php for ($j = 0; $j < count($customers) ; $j++): ?>
+                                                    <?php if($customers[$j]['customer_name'] == $customer_name): ?>
+                                                        <?php $customer_id = $customers[$j]['customer_id'] ?>
+                                                    <?php endif; ?>
+                                                <?php endfor; ?>
+                                                <!-- Just keep going if this customer is the owner -->
+                                                <?php if($worklist[$i]['customer_id'] == $customer_id): ?>
+                                                    <?php if($worklist_name == 'All works'): ?>
+                                                        <!-- Print table for all works that this customer have -->
+                                                        <?php for ($j = 0; $j < count($work) ; $j++): ?>
+                                                            <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
+                                                                <?php if( $date_from <= $work[$j]['work_date']): ?>
+                                                                    <?php if( $date_to >= $work[$j]['work_date']): ?>
+                                                                        <?php
+                                                                            $total_worked_hours += $work[$j]['work_minutes'];
+                                                                        ?>
+                                                                        <tr>
+                                                                            <?php for ($k = 0; $k < count($customers) ; $k++): ?>
+                                                                                <?php if( $customers[$k]['customer_id'] == $worklist[$i]['customer_id']): ?>
+                                                                                    <td><?php echo $customers[$k]['customer_name'] ?></td>
+                                                                                <?php endif; ?>
+                                                                            <?php endfor; ?>
+                                                                            <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                                                            <td><?php echo $work[$j]['work_date'] ?></td>
+                                                                            <td><?php echo round($work[$j]['work_minutes']/60, 3) ?></td>
+                                                                            <form action="process.php" method="POST" class="deleteWorkForm">
+                                                                            <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
+                                                                            <td>
+                                                                                <button type="submit" class="btn p-0" name="deleteWork">
+                                                                                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="32" width="32" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                                                                                        <style type="text/css">
+                                                                                            .st0{fill:url(#SVGID_1_);}
+                                                                                            .st1{fill:url(#SVGID_2_);}
+                                                                                            .st2{fill:url(#SVGID_3_);}
+                                                                                            .st3{fill:url(#SVGID_4_);}
+                                                                                            .st4{fill:url(#SVGID_5_);}
+                                                                                            .st5{fill:url(#SVGID_6_);}
+                                                                                            .st6{fill:url(#SVGID_7_);}
+                                                                                            .st7{fill:url(#SVGID_8_);}
+                                                                                            .st8{fill:url(#SVGID_9_);}
+                                                                                            .st9{fill:url(#SVGID_10_);}
+                                                                                            .st10{fill:url(#SVGID_11_);}
+                                                                                            .st11{fill:url(#SVGID_12_);}
+                                                                                            .st12{fill:url(#SVGID_13_);}
+                                                                                            .st13{fill:url(#SVGID_14_);}
+                                                                                            .st14{fill:url(#SVGID_15_);}
+                                                                                            .st15{fill:url(#SVGID_16_);}
+                                                                                            .st16{fill:url(#SVGID_17_);}
+                                                                                            .st17{fill:url(#SVGID_18_);}
+                                                                                            .st18{fill:url(#SVGID_19_);}
+                                                                                            .st19{fill:url(#SVGID_20_);}
+                                                                                        </style>
+                                                                                        <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
+                                                                                            <stop  offset="0" style="stop-color:#1245C6"/>
+                                                                                            <stop  offset="1" style="stop-color:#9909B7"/>
+                                                                                        </linearGradient>
+                                                                                        <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
+                                                                                        C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
+                                                                                        c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
+                                                                                        c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
+                                                                                        c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
+                                                                                        c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
+                                                                                        M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
+                                                                                        c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
+                                                                                        c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
+                                                                                        c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
+                                                                                        c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
+                                                                                        v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
+                                                                                    </svg>
+                                                                                </button>
+                                                                            </td>
+                                                                        </form>
+                                                                        </tr>
+                                                                    <?php endif; ?>
+                                                                <?php endif; ?>
+                                                            <?php endif; ?>
+                                                        <?php endfor; ?>
+                                                    <?php endif; ?>
+                                                    <?php if($worklist[$i]['worklist_name'] == $worklist_name): ?>
+                                                        <!-- Just print table for this filtered worklist -->
+                                                        <?php for ($j = 0; $j < count($work) ; $j++): ?>
+                                                            <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
+                                                                <?php if( $date_from <= $work[$j]['work_date']): ?>
+                                                                    <?php if( $date_to >= $work[$j]['work_date']): ?>
+                                                                        <?php
+                                                                            $total_worked_hours += $work[$j]['work_minutes'];
+                                                                        ?>
+                                                                        <tr>
+                                                                            <?php for ($k = 0; $k < count($customers) ; $k++): ?>
+                                                                                <?php if( $customers[$k]['customer_id'] == $worklist[$i]['customer_id']): ?>
+                                                                                    <td><?php echo $customers[$k]['customer_name'] ?></td>
+                                                                                <?php endif; ?>
+                                                                            <?php endfor; ?>
+                                                                            <td><?php echo $worklist[$i]['worklist_name'] ?></td>
+                                                                            <td><?php echo $work[$j]['work_date'] ?></td>
+                                                                            <td><?php echo round($work[$j]['work_minutes']/60, 3) ?></td>
+                                                                            <form action="process.php" method="POST" class="deleteWorkForm">
+                                                                                <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
+                                                                                <td>
+                                                                                    <button type="submit" class="btn p-0" name="deleteWork">
+                                                                                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="32" width="32" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                                                                                            <style type="text/css">
+                                                                                                .st0{fill:url(#SVGID_1_);}
+                                                                                                .st1{fill:url(#SVGID_2_);}
+                                                                                                .st2{fill:url(#SVGID_3_);}
+                                                                                                .st3{fill:url(#SVGID_4_);}
+                                                                                                .st4{fill:url(#SVGID_5_);}
+                                                                                                .st5{fill:url(#SVGID_6_);}
+                                                                                                .st6{fill:url(#SVGID_7_);}
+                                                                                                .st7{fill:url(#SVGID_8_);}
+                                                                                                .st8{fill:url(#SVGID_9_);}
+                                                                                                .st9{fill:url(#SVGID_10_);}
+                                                                                                .st10{fill:url(#SVGID_11_);}
+                                                                                                .st11{fill:url(#SVGID_12_);}
+                                                                                                .st12{fill:url(#SVGID_13_);}
+                                                                                                .st13{fill:url(#SVGID_14_);}
+                                                                                                .st14{fill:url(#SVGID_15_);}
+                                                                                                .st15{fill:url(#SVGID_16_);}
+                                                                                                .st16{fill:url(#SVGID_17_);}
+                                                                                                .st17{fill:url(#SVGID_18_);}
+                                                                                                .st18{fill:url(#SVGID_19_);}
+                                                                                                .st19{fill:url(#SVGID_20_);}
+                                                                                            </style>
+                                                                                            <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
+                                                                                                <stop  offset="0" style="stop-color:#1245C6"/>
+                                                                                                <stop  offset="1" style="stop-color:#9909B7"/>
+                                                                                            </linearGradient>
+                                                                                            <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
+                                                                                            C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
+                                                                                            c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
+                                                                                            c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
+                                                                                            c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
+                                                                                            c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
+                                                                                            M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
+                                                                                            c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
+                                                                                            c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
+                                                                                            c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
+                                                                                            c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
+                                                                                            v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
+                                                                                        </svg>
+                                                                                    </button>
+                                                                                </td>
+                                                                        </form>
+                                                                        </tr>
+                                                                    <?php endif; ?>
+                                                                <?php endif; ?>
+                                                            <?php endif; ?>
+                                                        <?php endfor; ?>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
                                             <?php endif; ?>
                                         <?php endif; ?>
-                                    <?php endif; ?>
-                                <?php endfor; ?>
-                                <tr>
-                                    <td colspan="2">Total Worked Hours</td>
-                                    <td colspan="3"><?php echo round($total_worked_hours/60,2).' hours'; ?></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    <?php endfor; ?>
+                                    <tr>
+                                        <td colspan="2">Total Worked Hours</td>
+                                        <td colspan="3"><?php echo round($total_worked_hours/60,2).' hours'; ?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div> 
                 </div>
             <?php endif; ?>

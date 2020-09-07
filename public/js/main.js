@@ -1,4 +1,11 @@
+// var URL      = document.URL,
+// PATHNAME = document.location.pathname;
+
+// console.log(URL);
+// console.log(PATHNAME);
+
 $( document ).ready(function() {
+
     // $('body').css('background-color', 'red');
     $('#newCustomerButton').click(function(){
         $('#addNewCustomerDiv').toggleClass("d-none");
@@ -14,12 +21,5 @@ $( document ).ready(function() {
         } else {
             $(this).parent().siblings('input').attr('value', '1')
         } 
-        /* // alert($(this).prop( "checked"));
-        var checkedValue = $(this).prop( "checked");
-        if(checkedValue == true) {
-            $(this).prepend("<input type='hidden' value='TRUE' name='worklist_active'>");
-        } else {
-            $(this).prepend("<input type='hidden' value='FALSE' name='worklist_active'>");
-        }  */
     });   
 });
