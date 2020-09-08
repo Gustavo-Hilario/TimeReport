@@ -1,5 +1,5 @@
 <?php
-    include_once 'includes/dbh.inc.php';
+    include_once 'includes/mysqli_connect.php';
     include_once 'process.php';
 ?> 
 <!DOCTYPE html>
@@ -147,14 +147,12 @@
             <div class="w-100 d-flex justify-content-around mx-auto mt-4">
                 <button id="newCustomerButton" class="btn btn-sm btn-outline-success" >Add New Customer</button>
                 <form action="index.php" method="GET">
-                    <button type="submit" class="btn btn-sm btn-outline-success" value="true" name="allCustomersReport">All Customer Report</button>
-                </form>
-            </div>
-            <div class="w-100 d-flex justify-content-start mx-auto mt-4">
-                <form action="index.php" method="GET">
                     <button type="submit" id="newCustomerButton" class="btn btn-sm btn-outline-dark" >
                         HomePage
                     </button>
+                </form>
+                <form action="index.php" method="GET">
+                    <button type="submit" class="btn btn-sm btn-outline-success" value="true" name="allCustomersReport">All Customer Report</button>
                 </form>
             </div>
         </div>
@@ -187,11 +185,6 @@
         
         <?php if(isset($_GET['addWork'])): ?>
             <!-- ADD WORK FORM -->
-            <?php
-                $customer_id = $_GET['addWork'];
-                $sqlAddWork = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
-                $sqlAddWorkResult = mysqli_query($mysqli, $sqlAddWork);
-            ?>
             <div id="addWorkForm">
                 <div class="row d-flex mt-4">
                     <div class="col-8 offset-2 col-lg-6 offset-lg-3">
@@ -215,11 +208,11 @@
                                     </div>
 
                                     <select name="worklistID" required>
-                                        <?php while ($worklist = mysqli_fetch_assoc($sqlAddWorkResult)): ?>
+                                        <?php foreach ($worklists as $key => $worklist): ?>
                                             <?php if($worklist['worklist_active'] == 1): ?>
                                                 <option value="<?php echo $worklist['worklist_id'] ?>"><?php echo $worklist['worklist_name'] ?></option>
                                             <?php endif; ?>
-                                        <?php endwhile; ?>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                                 
@@ -613,13 +606,13 @@
                             <form action="index.php" method="GET" id="filteringAllCustomersForm">
                                 <div class="row ml-3">
                                     <input type="hidden" value="true" name="allCustomersReport">
-                                    <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
+                                    <div class="col-6 col-md-6 col-xl-4 d-flex mt-2">
                                         <input type="date" value="<?php echo $date_from ?>" name="date_from">
                                     </div>
-                                    <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
+                                    <div class="col-6 col-md-6 col-xl-4 d-flex mt-2">
                                         <input type="date" value="<?php echo $date_to ?>" name="date_to">
                                     </div>
-                                    <div class="col-10 col-xl-4 d-flex mt-2">
+                                    <div class="col-10 col-xl-3 d-flex mt-2">
                                         <select name="worklist_name" class="w-75">
                                             <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
                                                 <?php if($worklist[$i]['worklist_active'] == 1): ?>
@@ -634,7 +627,7 @@
                                         </select>
                                     </div>
                                     <input type="hidden" value="" name="customer_name">
-                                    <div class="col-2 col-xl-2 d-flex mt-2">
+                                    <div class="col-2 col-xl-1 d-flex mt-2">
                                         <button type="submit" class="btn p-0">
                                             <svg viewBox="0 -26 512 512" xmlns="http://www.w3.org/2000/svg" height="40" width="40">
                                                 <path d="m56 70 160 200v180l6.878906-1.148438c16.492188-2.75 31.660156-9.703124 44.269532-19.839843 12.613281-10.152344 22.640624-23.492188 28.851562-39.011719v-120l160-200zm0 0" fill="#e87288"/>
