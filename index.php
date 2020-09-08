@@ -131,7 +131,7 @@
                                 <?php for($j = 0; $j < count($customer_sums); $j++): ?>
                                     <?php if($customer[$i]['customer_id'] == $customer_sums[$j]['customer_id']): ?>
                                         <?php $foundCustomerSumsforThisCustomer = true; ?>
-                                        <td><?php echo round($customer_sums[$j]['customer_remaining_minutes']/60, 1) ?></td>
+                                        <td><?php echo round($customer_sums[$j]['customer_remaining_minutes']/60, 2) ?></td>
                                     <?php endif; ?>
                                 <?php endfor; ?>
                                 <?php if($foundCustomerSumsforThisCustomer == false): ?>
@@ -255,12 +255,12 @@
                                     <tr>
                                         <td><?php echo $worklist['worklist_id'] ?></td>
                                         <td><?php echo $worklist['worklist_name'] ?></td>
-                                        <td><?php echo round($worklist['worklist_total_minutes']/60, 1) ?></td>
+                                        <td><?php echo round($worklist['worklist_total_minutes']/60, 2) ?></td>
                                         <?php if(isset($worklist['worklist_worked_minutes'])): ?>
-                                            <td><?php echo round($worklist['worklist_worked_minutes']/60,1) ?></td>
-                                            <td><?php echo round($worklist['worklist_remaining_minutes']/60,1) ?></td>
+                                            <td><?php echo round($worklist['worklist_worked_minutes']/60, 2) ?></td>
+                                            <td><?php echo round($worklist['worklist_remaining_minutes']/60, 2) ?></td>
                                             <?php else:?>
-                                            <td colspan="2" class="text-warning">Add Work</td>
+                                            <td colspan="2" class="text-warming">Add Work</td>
                                         <?php endif;?>
 
                                         <?php
@@ -302,16 +302,16 @@
 
                                 <tr>
                                     <td colspan="2">TOTALS</td>
-                                    <td><?php echo round($totals_hours/60,1); ?></td>
-                                    <td><?php echo round($totals_worked/60,1); ?></td>
-                                    <td><?php echo round($totals_available/60,1); ?></td>
+                                    <td><?php echo round($totals_hours/60, 2); ?></td>
+                                    <td><?php echo round($totals_worked/60, 2); ?></td>
+                                    <td><?php echo round($totals_available/60, 2); ?></td>
                                     <td>ALL</td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">TOTALS ACTIVE</td>
-                                    <td><?php echo round($totals_active_hours/60,1); ?></td>
-                                    <td><?php echo round($totals_active_worked/60,1); ?></td>
-                                    <td><?php echo round($totals_active_available/60,1); ?></td>
+                                    <td><?php echo round($totals_active_hours/60, 2); ?></td>
+                                    <td><?php echo round($totals_active_worked/60, 2); ?></td>
+                                    <td><?php echo round($totals_active_available/60, 2); ?></td>
                                     <td>ACTIVE</td>
                                 </tr>
                             </tbody>
@@ -367,35 +367,12 @@
                 $customer_id = $_GET['customerReport'];
                 $customer_name = $_GET['customer'];
                 $total_worked_hours = 0;
-
-                $sqlCustomerReportID = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
-                $sqlCustomerReportIDResult = mysqli_query($mysqli, $sqlCustomerReportID);
-                $sqlCustomerReportIDResultCheck = mysqli_num_rows($sqlCustomerReportIDResult);
-
-
-                $sqlWork = "SELECT * FROM work;";
-                $sqlWorkResult = mysqli_query($mysqli, $sqlWork);
-                $sqlWorkResultCheck = mysqli_num_rows($sqlWorkResult);
+                /* echo '<pre>';
+                var_dump($works);
+                echo '<pre>'; */
             ?>
 
-            <?php if(isset($sqlCustomerReportIDResult)): ?>
                 <?php 
-                    while($row = mysqli_fetch_assoc($sqlCustomerReportIDResult)){
-                        $worklist[] = $row;
-                    }
-
-                    if(!isset($worklist)){
-                        $worklist = [];
-                    }
-
-                    while($row = mysqli_fetch_assoc($sqlWorkResult)){
-                        $work[] = $row;
-                    }
-
-                    if(!isset($work)){
-                        $work = [];
-                    }
-
                     if(isset($_GET['date_from']) && $_GET['date_from'] !== ""){
                         $date_from = $_GET['date_from'];
                     } else if(!isset($_GET['date_from'])){
@@ -419,7 +396,6 @@
                     }
                 ?>
 
-                <!-- FILTERING FORM -->
                 <div class="row mt-4">
                     <div class="col-12 col-md-3 col-xl-2 d-flex justify-content-center align-items-center">
                         <h4 class="m-0"><?php echo $customer_name ?></h4>
@@ -436,17 +412,15 @@
                                     <input type="date" value="<?php echo $date_to ?>" name="date_to">
                                 </div>
                                 <div class="col-8 col-xl-4 d-flex mt-2">
-                                    <select name="worklist_name" id="">
-                                        <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
-                                            <?php if($worklist[$i]['worklist_active'] == 1): ?>
-                                                <option value="<?php echo $worklist[$i]['worklist_name'] ?>">
-                                                    <?php echo $worklist[$i]['worklist_name'] ?>
+                                    <select name="worklist_name" class="w-100">
+                                        <option value="<?php echo 'All works' ?>">All works</option>
+                                        <?php foreach ($works as $key => $work): ?>
+                                            <?php if($work['worklist_active'] == 1): ?>
+                                                <option value="<?php echo $work['worklist_name'] ?>">
+                                                    <?php echo $work['worklist_name'] ?>
                                                 </option>
                                             <?php endif; ?>
-                                        <?php endfor; ?>
-                                        <option value="<?php echo 'All works' ?>" selected="selected">
-                                            All works
-                                        </option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                                 <div class="col-4 col-xl-2 d-flex mt-2">
@@ -465,7 +439,6 @@
                     </div>
                 </div>
 
-                <!-- FILTERED TABLE -->
                 <div class="w-auto d-flex flex-column justify-content-center my-3">
                     <div class="d-flex justify-content-center">
                         <div class="table-responsive">
@@ -478,20 +451,20 @@
                                 </thead>
 
                                 <tbody>
-                                    <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
-                                        <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                    <?php foreach ($works as $key => $work): ?>
+                                        <?php if($work['worklist_active'] == 1): ?>
                                             <?php if(isset($worklist_name) && $worklist_name !== 'All works'): ?>
-                                                <?php if($worklist[$i]['worklist_name'] == $worklist_name): ?>
-                                                    <?php printTableData($work, $worklist, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers=null); ?> 
+                                                <?php if($work['worklist_name'] == $worklist_name): ?>
+                                                    <?php printTableData($work, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers=null); ?> 
                                                 <?php endif; ?>
                                             <?php else: ?>
-                                                <?php printTableData($work, $worklist, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers=null); ?> 
+                                                <?php printTableData($work, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers=null); ?> 
                                             <?php endif; ?>
                                         <?php endif; ?>
-                                    <?php endfor; ?>
+                                    <?php endforeach; ?>
                                     <tr>
                                         <td colspan="2">Total Worked Hours</td>
-                                        <td colspan="2"><?php echo round($total_worked_hours/60,2).' hours'; ?></td>
+                                        <td colspan="2"><?php echo round($total_worked_hours/60, 2).' hours'; ?></td>
                                     </tr>
                                 </tbody>
 
@@ -499,7 +472,6 @@
                         </div>
                     </div> 
                 </div>
-            <?php endif; ?>
             
         <?php endif;?>
 
@@ -659,7 +631,7 @@
                                     <?php endfor; ?>
                                     <tr>
                                         <td colspan="2">Total Worked Hours</td>
-                                        <td colspan="3"><?php echo round($total_worked_hours/60,2).' hours'; ?></td>
+                                        <td colspan="3"><?php echo round($total_worked_hours/60, 2).' hours'; ?></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -690,75 +662,72 @@
 </html>
 
 <?php 
-    function printTableData($work, $worklist, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers){ ?>
-        <?php for ($j = 0; $j < count($work) ; $j++): ?>
-            <?php if($worklist[$i]['worklist_id'] == $work[$j]['worklist_id']): ?>
-                <?php if( $date_from <= $work[$j]['work_date']): ?>
-                    <?php if( $date_to >= $work[$j]['work_date']): ?>
-                        <?php
-                            $total_worked_hours += $work[$j]['work_minutes'];
-                        ?>
-                        <tr>
-                            <?php if(isset($customers)):?>
-                                <?php for ($k = 0; $k < count($customers) ; $k++): ?>
-                                    <?php if( $customers[$k]['customer_id'] == $worklist[$i]['customer_id']): ?>
-                                        <td><?php echo $customers[$k]['customer_name'] ?></td>
-                                    <?php endif; ?>
-                                <?php endfor; ?>
+    function printTableData($work, $i, $worklist_name, $date_from, $date_to, &$total_worked_hours, $customers){ ?>
+        <?php if( $date_from <= $work['work_date']): ?>
+            <?php if( $date_to >= $work['work_date']): ?>
+                <?php
+                    $total_worked_hours += $work['work_minutes'];
+                ?>
+                <tr>
+                    <?php if(isset($customers)):?>
+                        <?php for ($k = 0; $k < count($customers) ; $k++): ?>
+                            <?php if( $customers[$k]['customer_id'] == $work['customer_id']): ?>
+                                <td><?php echo $customers[$k]['customer_name'] ?></td>
                             <?php endif; ?>
-                            <td><?php echo $worklist[$i]['worklist_name'] ?></td>
-                            <td><?php echo $work[$j]['work_date'] ?></td>
-                            <td><?php echo round($work[$j]['work_minutes']/60, 3) ?></td>
-                            <form action="process.php" method="POST" class="deleteWorkForm">
-                                <input type="hidden" name="work_id" value="<?php echo $work[$j]['work_id'] ?>">
-                                <td>
-                                    <button type="submit" class="btn p-0" name="deleteWork">
-                                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="32" width="32" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-                                            <style type="text/css">
-                                                .st0{fill:url(#SVGID_1_);}
-                                                .st1{fill:url(#SVGID_2_);}
-                                                .st2{fill:url(#SVGID_3_);}
-                                                .st3{fill:url(#SVGID_4_);}
-                                                .st4{fill:url(#SVGID_5_);}
-                                                .st5{fill:url(#SVGID_6_);}
-                                                .st6{fill:url(#SVGID_7_);}
-                                                .st7{fill:url(#SVGID_8_);}
-                                                .st8{fill:url(#SVGID_9_);}
-                                                .st9{fill:url(#SVGID_10_);}
-                                                .st10{fill:url(#SVGID_11_);}
-                                                .st11{fill:url(#SVGID_12_);}
-                                                .st12{fill:url(#SVGID_13_);}
-                                                .st13{fill:url(#SVGID_14_);}
-                                                .st14{fill:url(#SVGID_15_);}
-                                                .st15{fill:url(#SVGID_16_);}
-                                                .st16{fill:url(#SVGID_17_);}
-                                                .st17{fill:url(#SVGID_18_);}
-                                                .st18{fill:url(#SVGID_19_);}
-                                                .st19{fill:url(#SVGID_20_);}
-                                            </style>
-                                            <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
-                                                <stop  offset="0" style="stop-color:#1245C6"/>
-                                                <stop  offset="1" style="stop-color:#9909B7"/>
-                                            </linearGradient>
-                                            <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
-                                            C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
-                                            c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
-                                            c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
-                                            c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
-                                            c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
-                                            M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
-                                            c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
-                                            c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
-                                            c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
-                                            c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
-                                            v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
-                                        </svg>
-                                    </button>
-                                </td>
-                            </form>
-                        </tr>
+                        <?php endfor; ?>
                     <?php endif; ?>
-                <?php endif; ?>
+                    <td><?php echo $work['worklist_name'] ?></td>
+                    <td><?php echo $work['work_date'] ?></td>
+                    <td><?php echo round($work['work_minutes']/60, 2) ?></td>
+                    <form action="process.php" method="POST" class="deleteWorkForm">
+                        <input type="hidden" name="work_id" value="<?php echo $work['work_id'] ?>">
+                        <td>
+                            <button type="submit" class="btn p-0" name="deleteWork">
+                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="32" width="32" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                                    <style type="text/css">
+                                        .st0{fill:url(#SVGID_1_);}
+                                        .st1{fill:url(#SVGID_2_);}
+                                        .st2{fill:url(#SVGID_3_);}
+                                        .st3{fill:url(#SVGID_4_);}
+                                        .st4{fill:url(#SVGID_5_);}
+                                        .st5{fill:url(#SVGID_6_);}
+                                        .st6{fill:url(#SVGID_7_);}
+                                        .st7{fill:url(#SVGID_8_);}
+                                        .st8{fill:url(#SVGID_9_);}
+                                        .st9{fill:url(#SVGID_10_);}
+                                        .st10{fill:url(#SVGID_11_);}
+                                        .st11{fill:url(#SVGID_12_);}
+                                        .st12{fill:url(#SVGID_13_);}
+                                        .st13{fill:url(#SVGID_14_);}
+                                        .st14{fill:url(#SVGID_15_);}
+                                        .st15{fill:url(#SVGID_16_);}
+                                        .st16{fill:url(#SVGID_17_);}
+                                        .st17{fill:url(#SVGID_18_);}
+                                        .st18{fill:url(#SVGID_19_);}
+                                        .st19{fill:url(#SVGID_20_);}
+                                    </style>
+                                    <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.2004" y1="12.7327" x2="20.5835" y2="12.7327">
+                                        <stop  offset="0" style="stop-color:#1245C6"/>
+                                        <stop  offset="1" style="stop-color:#9909B7"/>
+                                    </linearGradient>
+                                    <path class="st0" d="M20.5,6.2C20.4,6.1,20.3,6,20.2,6h-4l-0.9-2.2c-0.1-0.3-0.4-0.6-0.7-0.8c-0.3-0.2-0.7-0.3-1-0.3H9.3
+                                    C9,2.7,8.6,2.8,8.3,3C7.9,3.3,7.7,3.5,7.6,3.9L6.7,6h-4c-0.1,0-0.2,0-0.3,0.1C2.2,6.2,2.2,6.3,2.2,6.5v0.8c0,0.1,0,0.2,0.1,0.3
+                                    c0.1,0.1,0.2,0.1,0.3,0.1h1.3v12.4c0,0.7,0.2,1.3,0.6,1.8c0.4,0.5,0.9,0.8,1.5,0.8h10.9c0.6,0,1.1-0.3,1.5-0.8
+                                    c0.4-0.5,0.6-1.2,0.6-1.9V7.7h1.3c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3V6.5C20.6,6.3,20.5,6.2,20.5,6.2z M9.1,4.5
+                                    c0.1-0.1,0.1-0.1,0.2-0.1h4.1c0.1,0,0.2,0.1,0.2,0.1L14.3,6H8.5L9.1,4.5z M17.2,20.1c0,0.2,0,0.4-0.1,0.5C17.1,20.8,17,20.9,17,21
+                                    c-0.1,0.1-0.1,0.1-0.1,0.1H6c0,0-0.1,0-0.1-0.1c-0.1-0.1-0.1-0.2-0.2-0.4c-0.1-0.2-0.1-0.3-0.1-0.5V7.7h11.7L17.2,20.1L17.2,20.1z
+                                    M7.6,18.6h0.8c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H7.6
+                                    c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C7.4,18.5,7.5,18.6,7.6,18.6z M11,18.6h0.8
+                                    c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1H11c-0.1,0-0.2,0-0.3,0.1
+                                    c-0.1,0.1-0.1,0.2-0.1,0.3v7.5c0,0.1,0,0.2,0.1,0.3C10.8,18.5,10.9,18.6,11,18.6z M14.3,18.6h0.8c0.1,0,0.2,0,0.3-0.1
+                                    c0.1-0.1,0.1-0.2,0.1-0.3v-7.5c0-0.1,0-0.2-0.1-0.3c-0.1-0.1-0.2-0.1-0.3-0.1h-0.8c-0.1,0-0.2,0-0.3,0.1c-0.1,0.1-0.1,0.2-0.1,0.3
+                                    v7.5c0,0.1,0,0.2,0.1,0.3C14.1,18.5,14.2,18.6,14.3,18.6z"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </form>
+                </tr>
             <?php endif; ?>
-        <?php endfor; ?> 
+        <?php endif; ?>
+        <?php return $total_worked_hours; ?>
 <?php } ?>

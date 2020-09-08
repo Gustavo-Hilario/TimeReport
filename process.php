@@ -30,7 +30,6 @@
     if(isset($_GET['worklist'])){
         $customer_id = $_GET['worklist'];
 
-        // $stmt = $mysqli->prepare("SELECT ws.* FROM worklist_sums ws INNER JOIN worklist wk ON ws.worklist_name = wk.worklist_name  WHERE ws.customer_id = wk.customer_id AND customer_id=?");
         $stmt = $mysqli->prepare("SELECT wk.*, ws.worklist_worked_minutes, ws.worklist_remaining_minutes FROM worklist wk LEFT JOIN worklist_sums ws ON wk.worklist_id = ws.worklist_id WHERE wk.customer_id=?");
         $stmt->bind_param("i", $customer_id);
         $stmt->execute();
@@ -67,6 +66,21 @@
         $stmt->execute();
         $stmt->close();
         header("Location: index.php?worklist=$customer_id");
+    }
+
+    if(isset($_GET['customerReport'])){
+        $customer_id = $_GET['customerReport'];
+
+        $stmt = $mysqli->prepare("SELECT w.*, wl.worklist_name, wl.worklist_active FROM work w LEFT JOIN worklist wl ON w.worklist_id = wl.worklist_id WHERE wl.customer_id=?");
+        $stmt->bind_param("i", $customer_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while($row = $result->fetch_assoc()) {
+            $works[] = $row;
+        }
+        if(!$works) exit('No rows');
+        var_export($works, true);
+        $stmt->close();
     }
 
     if(isset($_POST['changeActiveStatus'])){
