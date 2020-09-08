@@ -144,17 +144,24 @@
             </div>
 
             <!-- BUTTONS -->
-            <div class="w-100 d-flex justify-content-around mx-auto mt-4">
-                <button id="newCustomerButton" class="btn btn-sm btn-outline-success" >Add New Customer</button>
-                <form action="index.php" method="GET">
-                    <button type="submit" id="newCustomerButton" class="btn btn-sm btn-outline-dark" >
-                        HomePage
-                    </button>
-                </form>
-                <form action="index.php" method="GET">
-                    <button type="submit" class="btn btn-sm btn-outline-success" value="true" name="allCustomersReport">All Customer Report</button>
-                </form>
+            <div class="row mt-4">
+                <div class="col-4 text-center">
+                    <button id="newCustomerButton" class="btn btn-sm btn-outline-success" >Add New Customer</button>
+                </div>
+                <div class="col-4 text-center">
+                    <form action="index.php" method="GET">
+                        <button type="submit" id="newCustomerButton" class="btn btn-sm btn-outline-dark" >
+                            HomePage
+                        </button>
+                    </form>
+                </div>
+                <div class="col-4 text-center">
+                    <form action="index.php" method="GET">
+                        <button type="submit" class="btn btn-sm btn-outline-success" value="true" name="allCustomersReport">All Customer Report</button>
+                    </form>
+                </div>
             </div>
+            
         </div>
 
         <!-- ADD NEW CUSTOMER FORM -->
@@ -367,9 +374,6 @@
                 $customer_id = $_GET['customerReport'];
                 $customer_name = $_GET['customer'];
                 $total_worked_hours = 0;
-                /* echo '<pre>';
-                var_dump($works);
-                echo '<pre>'; */
             ?>
 
                 <?php 
@@ -455,10 +459,10 @@
                                         <?php if($work['worklist_active'] == 1): ?>
                                             <?php if(isset($worklist_name) && $worklist_name !== 'All works'): ?>
                                                 <?php if($work['worklist_name'] == $worklist_name): ?>
-                                                    <?php printTableData($work, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers=null); ?> 
+                                                    <?php printTableData($work, $worklist_name, $date_from, $date_to, $total_worked_hours); ?> 
                                                 <?php endif; ?>
                                             <?php else: ?>
-                                                <?php printTableData($work, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers=null); ?> 
+                                                <?php printTableData($work, $worklist_name, $date_from, $date_to, $total_worked_hours); ?> 
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
@@ -480,63 +484,43 @@
             <?php
                 $total_worked_hours = 0;
 
-                $sqlCustomers = "SELECT * FROM customers;";
-                $sqlCustomersResult = mysqli_query($mysqli, $sqlCustomers);
-                $sqlCustomersResultCheck = mysqli_num_rows($sqlCustomersResult);
+                $stmt = $mysqli->prepare("SELECT * FROM customers");
+                $stmt->execute();
+                $result = $stmt->get_result();
+                while($row = $result->fetch_assoc()) {
+                    $customers[] = $row;
+                }
+                if(!$customers) exit('No rows');
 
-                $sqlAllCustomerReport = "SELECT * FROM worklist;";
-                $sqlAllCustomerReportResult = mysqli_query($mysqli, $sqlAllCustomerReport);
-                $sqlAllCustomerReportResultCheck = mysqli_num_rows($sqlAllCustomerReportResult);
+                if(isset($_GET['date_from']) && $_GET['date_from'] !== ""){
+                    $date_from = $_GET['date_from'];
+                } else if(!isset($_GET['date_from'])){
+                    $currentMonth = date('m');
+                    $currentYear = date('Y');
+                    $date_from = "$currentYear-$currentMonth-01";
+                } else {
+                    $date_from = "0000-00-00";
+                }
 
+                if(isset($_GET['date_to']) && $_GET['date_to'] !== "" ){
+                    $date_to = $_GET['date_to'];
+                } else {
+                    $date_to = date('Y-m-d');
+                }
 
-                $sqlWork = "SELECT * FROM work;";
-                $sqlWorkResult = mysqli_query($mysqli, $sqlWork);
-                $sqlWorkResultCheck = mysqli_num_rows($sqlWorkResult);
+                if(isset($_GET['customer_name']) && $_GET['customer_name'] !== ''){
+                    $customer_name = $_GET['customer_name'];
+                } else {
+                    $customer_name = 'All Customers';
+                }
+
+                if(isset($_GET['worklist_name'])){
+                    $worklist_name = $_GET['worklist_name'];
+                } else {
+                    $worklist_name = 'All works';
+                }
             ?>
 
-            <?php if(isset($sqlAllCustomerReportResult)): ?>
-                <?php 
-                    while($row = mysqli_fetch_assoc($sqlCustomersResult)){
-                        $customers[] = $row;
-                    }
-
-                    while($row = mysqli_fetch_assoc($sqlAllCustomerReportResult)){
-                        $worklist[] = $row;
-                    }
-                    while($row = mysqli_fetch_assoc($sqlWorkResult)){
-                        $work[] = $row;
-                    }
-
-                    if(isset($_GET['date_from']) && $_GET['date_from'] !== ""){
-                        $date_from = $_GET['date_from'];
-                    } else if(!isset($_GET['date_from'])){
-                        $currentMonth = date('m');
-                        $currentYear = date('Y');
-                        $date_from = "$currentYear-$currentMonth-01";
-                    } else {
-                        $date_from = "0000-00-00";
-                    }
-
-                    if(isset($_GET['date_to']) && $_GET['date_to'] !== "" ){
-                        $date_to = $_GET['date_to'];
-                    } else {
-                        $date_to = date('Y-m-d');
-                    }
-
-                    if(isset($_GET['customer_name']) && $_GET['customer_name'] !== ''){
-                        $customer_name = $_GET['customer_name'];
-                    } else {
-                        $customer_name = 'All Customers';
-                    }
-
-                    if(isset($_GET['worklist_name'])){
-                        $worklist_name = $_GET['worklist_name'];
-                    } else {
-                        $worklist_name = 'All works';
-                    }
-                ?>
-
-                <!-- FILTERING FORM -->
                 <div class="row mt-4">
                     <div class="col-10 d-md-flex">
                         <div class="col-12 col-md-3 p-md-0 col-xl-2 d-flex justify-content-center align-items-center">
@@ -554,16 +538,22 @@
                                     </div>
                                     <div class="col-10 col-xl-3 d-flex mt-2">
                                         <select name="worklist_name" class="w-75">
-                                            <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
-                                                <?php if($worklist[$i]['worklist_active'] == 1): ?>
-                                                    <option value="<?php echo $worklist[$i]['worklist_name'] ?>">
-                                                        <?php echo $worklist[$i]['worklist_name'] ?>
-                                                    </option>
+                                            <option value="<?php echo 'All works' ?>">All works</option>
+                                            <?php foreach ($works as $key => $work): ?>
+                                                <?php if($work['worklist_active'] == 1): ?>
+                                                    <?php if(isset($customer_name) && $customer_name == 'All Customers'): ?>
+                                                        <option value="<?php echo $work['worklist_name'] ?>">
+                                                            <?php echo $work['worklist_name'] ?>
+                                                        </option>
+                                                        <?php else: ?>
+                                                        <?php if(isset($customer_name) && $customer_name == $work['customer_name']): ?>
+                                                            <option value="<?php echo $work['worklist_name'] ?>">
+                                                                <?php echo $work['worklist_name'] ?>
+                                                            </option>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
-                                            <?php endfor; ?>
-                                            <option value="<?php echo 'All works' ?>" selected="selected">
-                                                All works
-                                            </option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
                                     <input type="hidden" value="" name="customer_name">
@@ -584,7 +574,6 @@
                     </div>
                 </div>
 
-                <!-- FILTERED TABLE -->
                 <div class="row my-3">
                     <div class="col-10 p-0">
                         <div class="table-responsive">
@@ -597,38 +586,29 @@
                                     <th>Actions</th>
                                 </thead>
                                 <tbody>
-                                    <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
-                                        <?php if($worklist[$i]['worklist_active'] == 1): ?>
+                                    <?php foreach ($works as $key => $work): ?>
+                                        <?php if($work['worklist_active'] == 1): ?>
                                             <?php if($customer_name == 'All Customers'): ?>
                                                 <?php if(isset($worklist_name) && $worklist_name == 'All works'): ?>
-                                                    <!-- LOOP WORK AND PRINT DATA ACCORDINGLY WITH DATE -->
-                                                    <?php printTableData($work, $worklist, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers); ?> 
+                                                        <?php printTableData($work, $worklist_name, $date_from, $date_to, $total_worked_hours); ?> 
                                                 <?php else: ?>
-                                                    <?php if($worklist[$i]['worklist_name'] == $worklist_name): ?>
-                                                        <?php printTableData($work, $worklist, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers); ?> 
+                                                    <?php if($work['worklist_name'] == $worklist_name): ?>
+                                                        <?php printTableData($work, $worklist_name, $date_from, $date_to, $total_worked_hours); ?> 
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                             <?php else: ?>
-                                                <!-- GRAB customer_id -->
-                                                <?php for ($j = 0; $j < count($customers) ; $j++): ?>
-                                                    <?php if($customers[$j]['customer_name'] == $customer_name): ?>
-                                                        <?php $customer_id = $customers[$j]['customer_id'] ?>
-                                                    <?php endif; ?>
-                                                <?php endfor; ?>
-                                                <!-- Just keep going if this customer is the owner -->
-                                                <?php if($worklist[$i]['customer_id'] == $customer_id): ?>
-                                                    <?php if($worklist_name == 'All works'): ?>
-                                                        <!-- Print table for all works that this customer have -->
-                                                        <?php printTableData($work, $worklist, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers); ?> 
+                                                <?php if($work['customer_name'] == $customer_name): ?>
+                                                    <?php if(isset($worklist_name) && $worklist_name == 'All works'): ?>
+                                                        <?php printTableData($work, $worklist_name, $date_from, $date_to, $total_worked_hours); ?> 
                                                     <?php else: ?>
-                                                        <?php if($worklist[$i]['worklist_name'] == $worklist_name): ?>
-                                                            <?php printTableData($work, $worklist, $i, $worklist_name, $date_from, $date_to, $total_worked_hours, $customers); ?> 
+                                                        <?php if($work['worklist_name'] == $worklist_name): ?>
+                                                            <?php printTableData($work, $worklist_name, $date_from, $date_to, $total_worked_hours); ?> 
                                                         <?php endif; ?>
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                             <?php endif; ?>
                                         <?php endif; ?>
-                                    <?php endfor; ?>
+                                    <?php endforeach; ?>
                                     <tr>
                                         <td colspan="2">Total Worked Hours</td>
                                         <td colspan="3"><?php echo round($total_worked_hours/60, 2).' hours'; ?></td>
@@ -642,18 +622,15 @@
                             <option value="<?php echo 'All Customers' ?>">
                                 All Customers
                             </option>
-                            <?php for ($i = 0; $i < count($customers) ; $i++): ?>
-                                <option value="<?php echo $customers[$i]['customer_name'] ?>">
-                                    <?php echo $customers[$i]['customer_name'] ?>
+                            <?php foreach ($customers as $key => $customer): ?>
+                                <option value="<?php echo $customer['customer_name'] ?>">
+                                    <?php echo $customer['customer_name'] ?>
                                 </option>
-                            <?php endfor; ?>
+                            <?php endforeach; ?>
                         </select>
                     </div> 
                 </div>
-
                 
-            <?php endif; ?>
-            
         <?php endif;?>
     </div>
     <!-- My JS -->
@@ -662,19 +639,15 @@
 </html>
 
 <?php 
-    function printTableData($work, $i, $worklist_name, $date_from, $date_to, &$total_worked_hours, $customers){ ?>
+    function printTableData($work, $worklist_name, $date_from, $date_to, &$total_worked_hours){ ?>
         <?php if( $date_from <= $work['work_date']): ?>
             <?php if( $date_to >= $work['work_date']): ?>
                 <?php
                     $total_worked_hours += $work['work_minutes'];
                 ?>
                 <tr>
-                    <?php if(isset($customers)):?>
-                        <?php for ($k = 0; $k < count($customers) ; $k++): ?>
-                            <?php if( $customers[$k]['customer_id'] == $work['customer_id']): ?>
-                                <td><?php echo $customers[$k]['customer_name'] ?></td>
-                            <?php endif; ?>
-                        <?php endfor; ?>
+                    <?php if(isset($work['customer_name'])):?>
+                        <td><?php echo $work['customer_name'] ?></td>
                     <?php endif; ?>
                     <td><?php echo $work['worklist_name'] ?></td>
                     <td><?php echo $work['work_date'] ?></td>

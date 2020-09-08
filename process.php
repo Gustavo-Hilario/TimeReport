@@ -27,21 +27,6 @@
         $stmt->close();
     }
 
-    if(isset($_GET['worklist'])){
-        $customer_id = $_GET['worklist'];
-
-        $stmt = $mysqli->prepare("SELECT wk.*, ws.worklist_worked_minutes, ws.worklist_remaining_minutes FROM worklist wk LEFT JOIN worklist_sums ws ON wk.worklist_id = ws.worklist_id WHERE wk.customer_id=?");
-        $stmt->bind_param("i", $customer_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        while($row = $result->fetch_assoc()) {
-            $worklists[] = $row;
-        }
-        if(!$worklists) exit('No rows');
-        var_export($worklists, true);
-        $stmt->close();
-    }
-
     if(isset($_POST['saveNewWork'])){
         $work_date = $_POST['work_date'];
         $worklist_id = $_POST['worklistID'];
@@ -68,6 +53,33 @@
         header("Location: index.php?worklist=$customer_id");
     }
 
+    if(isset($_GET['worklist'])){
+        $customer_id = $_GET['worklist'];
+
+        $stmt = $mysqli->prepare("SELECT wk.*, ws.worklist_worked_minutes, ws.worklist_remaining_minutes FROM worklist wk LEFT JOIN worklist_sums ws ON wk.worklist_id = ws.worklist_id WHERE wk.customer_id=?");
+        $stmt->bind_param("i", $customer_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while($row = $result->fetch_assoc()) {
+            $worklists[] = $row;
+        }
+        if(!$worklists) exit('No rows');
+        var_export($worklists, true);
+        $stmt->close();
+    }
+
+    if(isset($_POST['changeActiveStatus'])){
+        $customer_id = $_POST['customer_id'];
+        $worklist_name = $_POST['worklist_name'];
+        $newStatus = $_POST['activeNewStatus'];
+
+        $stmt = $mysqli->prepare("UPDATE worklist SET worklist_active = ? WHERE worklist_name=? AND customer_id=?");
+        $stmt->bind_param("isi", $newStatus, $worklist_name, $customer_id);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: index.php?worklist=$customer_id");
+    }
+
     if(isset($_GET['customerReport'])){
         $customer_id = $_GET['customerReport'];
 
@@ -83,18 +95,26 @@
         $stmt->close();
     }
 
-    if(isset($_POST['changeActiveStatus'])){
-        $customer_id = $_POST['customer_id'];
-        $worklist_name = $_POST['worklist_name'];
-        $newStatus = $_POST['activeNewStatus'];
-        /* echo 'worklist_name: ' . $worklist_name . '<br/>' . 'newStatus: ' . $newStatus; */
-        $mysqli->query("UPDATE worklist SET worklist_active = '$newStatus' WHERE worklist_name='$worklist_name' AND customer_id='$customer_id' ;") or die($mysqli->error);
-        header('Location: index.php?worklist='.$customer_id);
+    if(isset($_GET['allCustomersReport'])){
+
+        $stmt = $mysqli->prepare("SELECT w.*, wl.worklist_name, wl.worklist_active, c.customer_name FROM work w LEFT JOIN worklist wl ON w.worklist_id = wl.worklist_id LEFT JOIN customers c ON wl.customer_id = c.customer_id");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while($row = $result->fetch_assoc()) {
+            $works[] = $row;
+        }
+        if(!$works) exit('No rows');
+        var_export($works, true);
+        $stmt->close();
     }
 
     if(isset($_POST['deleteWork'])){
         $work_id = $_POST['work_id'];
-        $mysqli->query("DELETE FROM work WHERE work_id='$work_id';") or die($mysqli->error);
+
+        $stmt = $mysqli->prepare("DELETE FROM work WHERE work_id=?");
+        $stmt->bind_param("i", $work_id);
+        $stmt->execute();
+        $stmt->close();
         header('Location: ' . $_SERVER['HTTP_REFERER']);
     }
 
