@@ -27,6 +27,22 @@
         $stmt->close();
     }
 
+    if(isset($_GET['worklist'])){
+        $customer_id = $_GET['worklist'];
+
+        // $stmt = $mysqli->prepare("SELECT ws.* FROM worklist_sums ws INNER JOIN worklist wk ON ws.worklist_name = wk.worklist_name  WHERE ws.customer_id = wk.customer_id AND customer_id=?");
+        $stmt = $mysqli->prepare("SELECT wk.*, ws.worklist_worked_minutes, ws.worklist_remaining_minutes FROM worklist wk LEFT JOIN worklist_sums ws ON wk.worklist_id = ws.worklist_id WHERE wk.customer_id=?");
+        $stmt->bind_param("i", $customer_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while($row = $result->fetch_assoc()) {
+            $worklists[] = $row;
+        }
+        if(!$worklists) exit('No rows');
+        var_export($worklists, true);
+        $stmt->close();
+    }
+
     if(isset($_POST['saveNewWork'])){
         $work_date = $_POST['work_date'];
         $worklist_id = $_POST['worklistID'];
@@ -44,10 +60,13 @@
         $customer_id = $_POST['customer_id'];
         $worklist_total_minutes = $_POST['worklist_total_minutes'];
         $worklist_active = $_POST['worklist_active'];
-        $mysqli->query("INSERT INTO worklist (worklist_name, customer_id, worklist_total_minutes, worklist_active) 
-                        VALUES ('$worklist_name', '$customer_id' , '$worklist_total_minutes', '$worklist_active')") 
-                        or die($mysqli->error);
-        header('Location: index.php');
+
+        $stmt = $mysqli->prepare("INSERT INTO worklist (worklist_name, customer_id, worklist_total_minutes, worklist_active) 
+                VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("siii", $worklist_name, $customer_id, $worklist_total_minutes, $worklist_active);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: index.php?worklist=$customer_id");
     }
 
     if(isset($_POST['changeActiveStatus'])){

@@ -228,17 +228,7 @@
         
         <?php if(isset($_GET['worklist'])): ?>
             <!-- TABLE OF WORKLIST-->
-            <?php 
-                $customer_id = $_GET['worklist'];
-
-                $sqlWorklist = "SELECT * FROM worklist WHERE customer_id=$customer_id;";
-                $sqlWorklistResult = mysqli_query($mysqli, $sqlWorklist);
-                $sqlWorklistResultCheck = mysqli_num_rows($sqlWorklistResult);
-
-                $sqlWorklistView = "SELECT * FROM worklist_sums WHERE customer_id=$customer_id;";
-                $sqlWorklistViewResult = mysqli_query($mysqli, $sqlWorklistView);
-                $sqlWorklistViewResultCheck = mysqli_num_rows($sqlWorklistViewResult);
-
+            <?php
                 $totals_hours = 0; 
                 $totals_worked = 0; 
                 $totals_available = 0;
@@ -249,96 +239,74 @@
             ?>
 
             <div class="w-auto d-flex flex-column justify-content-center my-5">
-                <?php if($sqlWorklistResultCheck): ?>
-                    <div class="d-flex justify-content-center">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
-                                <thead>
-                                    <th>Worklist ID</th>
-                                    <th>Worklist Name</th>
-                                    <th>Total Hours</th>
-                                    <th>Worked Hours</th>
-                                    <th>Available Hours</th>
-                                    <th>Active (Y/N)</th>
-                                </thead>
-                                <?php 
-                                    while ($row = mysqli_fetch_assoc($sqlWorklistResult)){
-                                        $worklist[] = $row;
-                                    };
-                                    while ($row = mysqli_fetch_assoc($sqlWorklistViewResult)){
-                                        $worklistView[] = $row;
-                                    };
-                                ?>
-                                <tbody>
-                                    <?php for ($i = 0; $i < count($worklist) ; $i++): ?>
-                                        <tr>
-                                            <td><?php echo $worklist[$i]['worklist_id'] ?></td>
-                                            <td><?php echo $worklist[$i]['worklist_name'] ?></td>
-                                            <td><?php echo round($worklist[$i]['worklist_total_minutes']/60, 1) ?></td>
+                <div class="d-flex justify-content-center">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
+                            <thead>
+                                <th>Worklist ID</th>
+                                <th>Worklist Name</th>
+                                <th>Total Hours</th>
+                                <th>Worked Hours</th>
+                                <th>Available Hours</th>
+                                <th>Active (Y/N)</th>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($worklists as $key => $worklist): ?>
+                                    <tr>
+                                        <td><?php echo $worklist['worklist_id'] ?></td>
+                                        <td><?php echo $worklist['worklist_name'] ?></td>
+                                        <td><?php echo round($worklist['worklist_total_minutes']/60, 1) ?></td>
+                                        <?php if(isset($worklist['worklist_worked_minutes'])): ?>
+                                            <td><?php echo round($worklist['worklist_worked_minutes']/60,1) ?></td>
+                                            <td><?php echo round($worklist['worklist_remaining_minutes']/60,1) ?></td>
+                                            <?php else:?>
+                                            <td colspan="2" class="text-warning">Add Work</td>
+                                        <?php endif;?>
 
-                                            <?php $foundWorklistViewData = false;?>
-                                            <?php if(isset($worklistView)): ?>
-                                                <?php for ($j = 0; $j < count($worklistView) ; $j++): ?>
-                                                    <?php if($worklist[$i]['worklist_id'] == $worklistView[$j]['worklist_id']): ?>
-                                                        <td><?php echo round($worklistView[$j]['worklist_worked_minutes']/60,1) ?></td>
-                                                        <td><?php echo round($worklistView[$j]['worklist_remaining_minutes']/60,1) ?></td>
+                                        <?php
+                                            $totals_hours += $worklist['worklist_total_minutes']; 
+                                            $totals_worked += $worklist['worklist_worked_minutes']; 
+                                            $totals_available += $worklist['worklist_remaining_minutes'];
+                                            
+                                            if($worklist['worklist_active'] == 1){
+                                                $totals_active_hours += $worklist['worklist_total_minutes']; 
+                                                $totals_active_worked += $worklist['worklist_worked_minutes']; 
+                                                $totals_active_available += $worklist['worklist_remaining_minutes'];
+                                            }
+                                        ?>
 
-                                                        <?php
-                                                            $foundWorklistViewData = true;
-                                                            $totals_hours += $worklist[$i]['worklist_total_minutes']; 
-                                                            $totals_worked += $worklistView[$j]['worklist_worked_minutes']; 
-                                                            $totals_available += $worklistView[$j]['worklist_remaining_minutes'];
-                                                            
-                                                            if($worklist[$i]['worklist_active'] == 1){
-                                                                $totals_active_hours += $worklist[$i]['worklist_total_minutes']; 
-                                                                $totals_active_worked += $worklistView[$j]['worklist_worked_minutes']; 
-                                                                $totals_active_available += $worklistView[$j]['worklist_remaining_minutes'];
-                                                            }
-                                                        ?>
-                                                    <?php endif; ?>
-                                                <?php endfor; ?>
-                                            <?php endif; ?>
-                                            <?php if($foundWorklistViewData == false):?>
-                                                <td colspan="2"><?php echo 'ADD WORK'; ?></td>
-                                            <?php endif; ?>
-
-                                            <td>
-                                                <form action="process.php" method="POST" class="changeActiveStatusFrom">
-                                                    <input type="hidden" value="<?php echo $worklist[$i]['worklist_name'] ?>" name="worklist_name">
-                                                    <input type="hidden" value="<?php echo $customer_id ?>" name="customer_id">
-                                                    
-                                                    <button type="submit" class="btn" name="changeActiveStatus">
-                                                        <?php if($worklist[$i]['worklist_active'] == 1): ?>
-                                                            <input type="hidden" value="0" name="activeNewStatus">
+                                        <td>
+                                            <form action="process.php" method="POST" class="changeActiveStatusFrom">
+                                                <input type="hidden" value="<?php echo $worklist['worklist_name'] ?>" name="worklist_name">
+                                                <input type="hidden" value="<?php echo $customer_id ?>" name="customer_id">
+                                                
+                                                <button type="submit" class="btn" name="changeActiveStatus">
+                                                    <?php if($worklist['worklist_active'] == 1): ?>
+                                                        <input type="hidden" value="0" name="activeNewStatus">
+                                                        <label class="switch">
+                                                            <input type="checkbox" checked>
+                                                            <span class="slider round"></span>
+                                                        </label>
+                                                        <?php else:?>
+                                                            <input type="hidden" value="1" name="activeNewStatus">
                                                             <label class="switch">
-                                                                <input type="checkbox" checked>
+                                                                <input type="checkbox">
                                                                 <span class="slider round"></span>
                                                             </label>
-                                                            <?php else:?>
-                                                                <input type="hidden" value="1" name="activeNewStatus">
-                                                                <label class="switch">
-                                                                    <input type="checkbox">
-                                                                    <span class="slider round"></span>
-                                                                </label>
-                                                        <?php endif; ?>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    <?php endfor; ?>
-
-                                    <tr>
-                                        <td colspan="2">TOTALS</td>
-                                        <td><?php echo round($totals_hours/60,1); ?></td>
-                                        <td><?php echo round($totals_worked/60,1); ?></td>
-                                        <td><?php echo round($totals_available/60,1); ?></td>
-                                        <td>ALL</td>
+                                                    <?php endif; ?>
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
-                                </tbody>
-                                
+                                <?php endforeach; ?>
 
-                                
-
+                                <tr>
+                                    <td colspan="2">TOTALS</td>
+                                    <td><?php echo round($totals_hours/60,1); ?></td>
+                                    <td><?php echo round($totals_worked/60,1); ?></td>
+                                    <td><?php echo round($totals_available/60,1); ?></td>
+                                    <td>ALL</td>
+                                </tr>
                                 <tr>
                                     <td colspan="2">TOTALS ACTIVE</td>
                                     <td><?php echo round($totals_active_hours/60,1); ?></td>
@@ -346,10 +314,10 @@
                                     <td><?php echo round($totals_active_available/60,1); ?></td>
                                     <td>ACTIVE</td>
                                 </tr>
-                            </table>
-                        </div>
-                    </div> 
-                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div> 
 
                 <div class="d-flex justify-content-center mt-4">
                     <button class="btn btn-sm btn-outline-success" id="addWorkButton">Add To Worklist</button>
