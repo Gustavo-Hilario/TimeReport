@@ -2,6 +2,17 @@
 
     include_once 'includes/mysqli_connect.php';
 
+    // RETRIEVING CUSTOMERS
+        $stmt = $mysqli->prepare("SELECT c.*, cs.customer_remaining_minutes FROM customers c LEFT JOIN customer_sums cs ON c.customer_id = cs.customer_id");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while($row = $result->fetch_assoc()) {
+            $customers[] = $row;
+        }
+        if(!$customers) exit('No rows');
+        var_export($customers, true);
+        $stmt->close();
+
     if(isset($_POST['saveNewCustomer'])){
         $customer_name = $_POST['name'];
 

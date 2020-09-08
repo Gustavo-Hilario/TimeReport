@@ -29,26 +29,6 @@
     <div class="container mt-5">
         <!-- CUSTOMERS TABLE -->
         <div id="customersTable">
-            <?php
-                $sql = "SELECT * FROM customers;";
-                $sqlCustomerResult = mysqli_query($mysqli, $sql);
-                $sqlCustomerResultCheck = mysqli_num_rows($sqlCustomerResult);
-
-                $sql = "SELECT * FROM customer_sums;";
-                $sqlCustomerSumsResult = mysqli_query($mysqli, $sql);
-                $sqlCustomerSumsResultCheck = mysqli_num_rows($sqlCustomerSumsResult);
-
-                while($row = mysqli_fetch_assoc($sqlCustomerResult)) {
-                    $customer[] = $row;
-                }
-
-                while($row = mysqli_fetch_assoc($sqlCustomerSumsResult)) {
-                    $customer_sums[] = $row;
-                }
-                if(!isset($customer_sums)){
-                    $customer_sums = [];
-                }
-            ?>
             <div class="table-responsive">
                 <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
                     <thead>
@@ -58,13 +38,13 @@
                         <th>Hour Total</th>
                     </thead>
                     <tbody>
-                        <?php for ($i = 0; $i < count($customer); $i++): ?>
+                        <?php foreach ($customers as $key => $customer): ?>
                             <tr>
-                                <td><?php echo $customer[$i]['customer_id'] ?></td>
-                                <td><?php echo $customer[$i]['customer_name'] ?></td>
+                                <td><?php echo $customer['customer_id'] ?></td>
+                                <td><?php echo $customer['customer_name'] ?></td>
                                 <td>
                                     <div class="d-flex justify-content-around align-items-center">
-                                        <a href="index.php?addWork=<?php echo $customer[$i]['customer_id'] ?>" class="addWorkButton">
+                                        <a href="index.php?addWork=<?php echo $customer['customer_id'] ?>" class="addWorkButton">
                                             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="32" width="32" x="0px" y="0px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
                                                 <g>
                                                     <rect x="76" y="14.9" fill="#F5F0E1" width="48" height="6.4"/>
@@ -98,7 +78,7 @@
                                             </svg>
                                         </a>
 
-                                        <a href="index.php?worklist=<?php echo $customer[$i]['customer_id'] ?>" class="worklistButton">
+                                        <a href="index.php?worklist=<?php echo $customer['customer_id'] ?>" class="worklistButton">
                                             <svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 25 25" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
                                                 <g transform="translate(0 -1028.4)">
                                                 <path d="m3 1035.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#16a085"/>
@@ -113,7 +93,7 @@
                                             </svg>
                                         </a>
                                             
-                                        <a href="index.php?customerReport=<?php echo $customer[$i]['customer_id'] ?>&customer=<?php echo $customer[$i]['customer_name'] ?>" class="customerReportButton">
+                                        <a href="index.php?customerReport=<?php echo $customer['customer_id'] ?>&customer=<?php echo $customer['customer_name'] ?>" class="customerReportButton">
                                             <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 128 128">
                                                 <defs><style>.cls-1{fill:#2d3e50;}.cls-2{fill:#2e79bd;}</style></defs>
                                                 <title>b</title>
@@ -127,18 +107,13 @@
                                     </div>
                                     
                                 </td>
-                                <?php $foundCustomerSumsforThisCustomer = false; ?>
-                                <?php for($j = 0; $j < count($customer_sums); $j++): ?>
-                                    <?php if($customer[$i]['customer_id'] == $customer_sums[$j]['customer_id']): ?>
-                                        <?php $foundCustomerSumsforThisCustomer = true; ?>
-                                        <td><?php echo round($customer_sums[$j]['customer_remaining_minutes']/60, 2) ?></td>
-                                    <?php endif; ?>
-                                <?php endfor; ?>
-                                <?php if($foundCustomerSumsforThisCustomer == false): ?>
+                                <?php if(isset($customer['customer_remaining_minutes'])): ?>
+                                    <td><?php echo round($customer['customer_remaining_minutes']/60, 2) ?></td>
+                                <?php else: ?>
                                     <td>-</td>
                                 <?php endif; ?>
                             </tr>
-                        <?php endfor; ?>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
