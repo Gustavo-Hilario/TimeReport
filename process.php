@@ -53,7 +53,7 @@
     if(isset($_POST['saveNewToWorklist'])){
         $worklist_name = $_POST['worklist_name'];
         $customer_id = $_POST['customer_id'];
-        $worklist_total_minutes = $_POST['worklist_total_minutes'];
+        $worklist_total_minutes = $_POST['worklist_total_minutes']*60;
         $worklist_active = $_POST['worklist_active'];
 
         $stmt = $mysqli->prepare("INSERT INTO worklist (worklist_name, customer_id, worklist_total_minutes, worklist_active) 
