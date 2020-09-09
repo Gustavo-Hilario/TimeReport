@@ -322,7 +322,7 @@
                 <!-- ADD A WORK TO WORKLIST BUTTON -->
                 <div class="d-flex justify-content-center mt-4">
                     <?php if(isset($error)): ?>
-                        <button class="btn btn-sm btn-outline-danger" id="addWorkButton">Add To Worklist</button>
+                        <button class="btn btn-sm btn-outline-primary" id="addWorkButton">Add To Worklist</button>
                     <?php else:?>
                         <button class="btn btn-sm btn-outline-success" id="addWorkButton">Add To Worklist</button>
                     <?php endif; ?>
