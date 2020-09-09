@@ -30,7 +30,7 @@
         <!-- CUSTOMERS TABLE -->
         <div id="customersTable">
             <div class="table-responsive">
-                <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
+                <table class="table table-sm table-dark table-striped table-borderless table-hover text-center rounded">
                     <thead>
                         <th>Customer ID</th>
                         <th>Customer Name</th>
@@ -177,19 +177,19 @@
                                 <div class="text-center">
                                     <div class="form-group m-0">
                                         <label for="work_date" class="mr-2">Date</label>
-                                        <input type="date" id="work_date" name="work_date" placeholder="2020-20-02" required>
+                                        <input type="date" class="rounded text-center" id="work_date" name="work_date" placeholder="2020-20-02" required>
                                     </div>
 
                                     <div class="form-group row py-3 text-center m-0">
                                         <div class="col-12 col-md-9 pr-md-0 col-lg-8 ">
                                             <label for="work_minutes" class="mr-2">Worked Time in Minutes</label>
                                         </div>
-                                        <div class="col-12 col-md-3 pl-md-0 col-lg-4 ">
-                                            <input type="number" id="work_minutes" class="w-75" name="work_minutes" placeholder="60" required>
+                                        <div class="col-12 col-md-3 pl-md-0 col-lg-4">
+                                            <input type="number" class="rounded w-100 text-center" id="work_minutes" class="w-75" name="work_minutes" placeholder="60" required>
                                         </div>
                                     </div>
 
-                                    <select name="worklistID" required>
+                                    <select name="worklistID" class="rounded" required>
                                         <?php foreach ($worklists as $key => $worklist): ?>
                                             <?php if($worklist['worklist_active'] == 1): ?>
                                                 <option value="<?php echo $worklist['worklist_id'] ?>"><?php echo $worklist['worklist_name'] ?></option>
@@ -223,7 +223,7 @@
             <div class="w-auto d-flex flex-column justify-content-center my-5">
                 <div class="d-flex justify-content-center">
                     <div class="table-responsive">
-                        <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
+                        <table class="table table-sm table-dark table-striped table-borderless table-hover text-center rounded">
                             <thead>
                                 <th>Worklist ID</th>
                                 <th>Worklist Name</th>
@@ -316,12 +316,12 @@
 
                                 <div class="form-group">
                                     <label for="worklist_name">Work Name</label>
-                                    <input type="text" id="worklist_name" name="worklist_name" required>
+                                    <input type="text" class="rounded" id="worklist_name" name="worklist_name" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="worklist_total_minutes">Total Hours</label>
-                                    <input type="number" id="worklist_total_minutes" name="worklist_total_minutes" required>
+                                    <input type="number" class="rounded" id="worklist_total_minutes" name="worklist_total_minutes" required>
                                 </div>
 
                                 <div class="form-group">
@@ -385,13 +385,13 @@
                                 <input type="hidden" value="<?php echo $customer_id?>" name="customerReport">
                                 <input type="hidden" value="<?php echo $customer_name?>" name="customer">
                                 <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
-                                    <input type="date" value="<?php echo $date_from ?>" name="date_from">
+                                    <input type="date" class="rounded" value="<?php echo $date_from ?>" name="date_from">
                                 </div>
                                 <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
-                                    <input type="date" value="<?php echo $date_to ?>" name="date_to">
+                                    <input type="date" class="rounded" value="<?php echo $date_to ?>" name="date_to">
                                 </div>
                                 <div class="col-8 col-xl-4 d-flex mt-2">
-                                    <select name="worklist_name" class="w-100">
+                                    <select name="worklist_name" class="w-100 rounded">
                                         <option value="<?php echo 'All works' ?>">All works</option>
                                         <?php foreach ($works as $key => $work): ?>
                                             <?php if($work['worklist_active'] == 1): ?>
@@ -421,7 +421,7 @@
                 <div class="w-auto d-flex flex-column justify-content-center my-3">
                     <div class="d-flex justify-content-center">
                         <div class="table-responsive">
-                            <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
+                            <table class="table table-sm table-dark table-striped table-borderless table-hover text-center rounded">
                                 <thead>
                                     <th>Work Name</th>
                                     <th>Date</th>
@@ -506,13 +506,13 @@
                                 <div class="row ml-3">
                                     <input type="hidden" value="true" name="allCustomersReport">
                                     <div class="col-6 col-md-6 col-xl-4 d-flex mt-2">
-                                        <input type="date" value="<?php echo $date_from ?>" name="date_from">
+                                        <input type="date" class="rounded" value="<?php echo $date_from ?>" name="date_from">
                                     </div>
                                     <div class="col-6 col-md-6 col-xl-4 d-flex mt-2">
-                                        <input type="date" value="<?php echo $date_to ?>" name="date_to">
+                                        <input type="date" class="rounded" value="<?php echo $date_to ?>" name="date_to">
                                     </div>
                                     <div class="col-10 col-xl-3 d-flex mt-2">
-                                        <select name="worklist_name" class="w-75">
+                                        <select name="worklist_name" class="w-100 rounded">
                                             <option value="<?php echo 'All works' ?>">All works</option>
                                             <?php foreach ($works as $key => $work): ?>
                                                 <?php if($work['worklist_active'] == 1): ?>
@@ -552,7 +552,7 @@
                 <div class="row my-3">
                     <div class="col-10 p-0">
                         <div class="table-responsive">
-                            <table class="table table-sm table-dark table-striped table-borderless table-hover text-center">
+                            <table class="table table-sm table-dark table-striped table-borderless table-hover text-center rounded">
                                 <thead>
                                     <th>Customer Name</th>
                                     <th>Work Name</th>
@@ -593,7 +593,7 @@
                         </div>
                     </div>
                     <div class="col-2 px-1 m-0">
-                        <select name="customer_name" class="w-100" id="customer_nameFilter">
+                        <select name="customer_name" class="w-100 rounded" id="customer_nameFilter">
                             <option value="<?php echo 'All Customers' ?>">
                                 All Customers
                             </option>
