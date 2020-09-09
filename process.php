@@ -116,7 +116,7 @@
         if(isset($works)){
             var_export($works, true);
         } else {
-            $response = [$works=[], $error=true, $message='Worklist not found. Add work to worklist first in the previous action!'];
+            $response = [$works=[], $error=true, $message='Works not found. Add work first ...'];
             var_export($response, true);
         }
         var_export($works, true);
@@ -134,7 +134,7 @@
         if(isset($works)){
             var_export($works, true);
         } else {
-            $response = [$works=[], $error=true, $message='Worklist not found. Add work to worklist first!'];
+            $response = [$works=[], $error=true, $message='Works not found. Add work first ...'];
             var_export($response, true);
         }
         var_export($works, true);

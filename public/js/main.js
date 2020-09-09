@@ -7,6 +7,9 @@
 $( document ).ready(function() {
 
     // $('body').css('background-color', 'red');
+    if($('#errorDiv')){
+        console.log('ERROR DIV');
+    }
     $('#newCustomerButton').click(function(){
         $('#addNewCustomerDiv').toggleClass("d-none");
     });
