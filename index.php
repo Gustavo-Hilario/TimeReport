@@ -26,98 +26,105 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
+    <?php if(isset($error)): ?>
+        <div class="container-fluid p-0 text-center">
+            <div class="alert alert-warning" role="alert"><?php echo $message; ?></div>
+        </div>
+    <?php endif ?>
+
     <div class="container mt-5">
         <!-- CUSTOMERS TABLE -->
-        <div id="customersTable">
-            <div class="table-responsive">
-                <table class="table table-sm table-dark table-striped table-borderless table-hover text-center rounded">
-                    <thead>
-                        <th>Customer ID</th>
-                        <th>Customer Name</th>
-                        <th>Actions</th>
-                        <th>Hour Total</th>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($customers as $key => $customer): ?>
-                            <tr>
-                                <td><?php echo $customer['customer_id'] ?></td>
-                                <td><?php echo $customer['customer_name'] ?></td>
-                                <td>
-                                    <div class="d-flex justify-content-around align-items-center">
-                                        <a href="index.php?addWork=<?php echo $customer['customer_id'] ?>" class="addWorkButton">
-                                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="32" width="32" x="0px" y="0px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
-                                                <g>
-                                                    <rect x="76" y="14.9" fill="#F5F0E1" width="48" height="6.4"/>
-                                                    <path fill="#D66194" d="M112.7,80.3c-4.1,0-7.9,2.2-9.9,5.8c-0.6,1-1.6,1.6-2.8,1.6c-1.2,0-2.2-0.6-2.8-1.6c-2-3.6-5.8-5.8-9.9-5.8
-                                                        c-6.2,0-11.3,5.1-11.3,11.3c0,3.1,1.1,6.3,2.8,9.5h8c0-1.8,1.4-3.2,3.2-3.2h20.1c1.8,0,3.2,1.4,3.2,3.2l8,0
-                                                        c1.7-3.2,2.8-6.5,2.8-9.5C124,85.4,118.9,80.3,112.7,80.3z"/>
-                                                    <path fill="#A2496F" d="M110.1,104.4H89.9c-1.8,0-3.2-1.4-3.2-3.2h-8c5.2,9.8,16.5,19.4,21.2,23.2c4.7-3.8,16-13.3,21.2-23.2h-8
-                                                        C113.3,102.9,111.8,104.4,110.1,104.4z"/>
-                                                    <path fill="#D0E7DA" d="M69.6,91.6c0-9.8,7.9-17.7,17.7-17.7c4.8,0,9.4,2,12.7,5.4c3.3-3.4,7.8-5.4,12.7-5.4
-                                                        c9.8,0,17.7,7.9,17.7,17.7c0,3-0.7,6.2-2.1,9.5h7c0-1.8,1.4-3.2,3.2-3.2h39c8.9,0,16.2-7.3,16.2-16.2V43.4c0-1.6-1.3-3-3-3H9.3
-                                                        c-1.6,0-3,1.3-3,3v38.4c0,8.9,7.3,16.2,16.2,16.2h39c1.8,0,3.2,1.4,3.2,3.2l7,0C70.3,97.8,69.6,94.7,69.6,91.6z"/>
-                                                    <path fill="#ADC3B7" d="M6.4,107.4v74.7c0,1.6,1.3,3,3,3h181.3c1.6,0,3-1.3,3-3V97.5c-4.1,4.2-9.8,6.9-16.2,6.9h-39
-                                                        c-1.8,0-3.2-1.4-3.2-3.2h-7c-2.1,4.9-5.7,10.2-10.8,15.7c-6.5,7.1-13.6,12.6-15.6,14.1c-0.6,0.4-1.2,0.6-1.9,0.6s-1.3-0.2-1.9-0.6
-                                                        c-2-1.5-9.1-7-15.6-14.1c-5.1-5.6-8.7-10.8-10.8-15.7h-7c0,1.8-1.4,3.2-3.2,3.2h-39c-8.2,0-15.4-4.4-19.4-11v10.9
-                                                        C5,104.2,6.4,105.7,6.4,107.4z"/>
-                                                    <path fill="#422938" d="M89.9,104.4h20.1c1.8,0,3.2-1.4,3.2-3.2c0-1.8-1.4-3.2-3.2-3.2H89.9c-1.8,0-3.2,1.4-3.2,3.2
-                                                        C86.7,102.9,88.2,104.4,89.9,104.4z"/>
-                                                    <path fill="#422938" d="M190.7,34.1h-60.3V11.7c0-1.8-1.4-3.2-3.2-3.2H72.8c-1.8,0-3.2,1.4-3.2,3.2v22.3H9.3
-                                                        c-5.1,0-9.3,4.2-9.3,9.3v38.4C0,86,1.2,90,3.2,93.3c3.9,6.6,11.2,11,19.4,11h39c1.8,0,3.2-1.4,3.2-3.2c0-1.8-1.4-3.2-3.2-3.2h-39
-                                                        c-8.9,0-16.2-7.3-16.2-16.2V43.4c0-1.6,1.3-3,3-3h181.3c1.6,0,3,1.3,3,3v38.4c0,8.9-7.3,16.2-16.2,16.2h-39c-1.8,0-3.2,1.4-3.2,3.2
-                                                        c0,1.8,1.4,3.2,3.2,3.2h39c6.3,0,12.1-2.6,16.2-6.9v84.6c0,1.6-1.3,3-3,3H9.3c-1.6,0-3-1.3-3-3v-74.7c0-1.8-1.4-3.2-3.2-3.2
-                                                        c-1.8,0-3.2,1.4-3.2,3.2v74.7c0,5.1,4.2,9.3,9.3,9.3h181.3c5.1,0,9.3-4.2,9.3-9.3V43.4C200,38.3,195.8,34.1,190.7,34.1z M124,21.3
-                                                        H76v-6.4h48V21.3z M76,27.7h48v6.4H76V27.7z"/>
-                                                    <path fill="#422938" d="M112.7,73.9c-4.8,0-9.4,2-12.7,5.4c-3.3-3.4-7.8-5.4-12.7-5.4c-9.8,0-17.7,7.9-17.7,17.7
-                                                        c0,3,0.7,6.2,2.1,9.5c2.1,4.9,5.7,10.2,10.8,15.7C89,124,96.1,129.4,98.1,131c0.6,0.4,1.2,0.6,1.9,0.6s1.3-0.2,1.9-0.6
-                                                        c2-1.5,9.1-7,15.6-14.1c5.1-5.6,8.7-10.8,10.8-15.7c1.4-3.3,2.1-6.5,2.1-9.5C130.4,81.9,122.4,73.9,112.7,73.9z M121.2,101.2
-                                                        c-5.2,9.8-16.5,19.4-21.2,23.2c-4.7-3.8-16-13.3-21.2-23.2C77.1,98,76,94.7,76,91.6c0-6.2,5.1-11.3,11.3-11.3
-                                                        c4.1,0,7.9,2.2,9.9,5.8c0.6,1,1.6,1.6,2.8,1.6c1.2,0,2.2-0.6,2.8-1.6c2-3.6,5.8-5.8,9.9-5.8c6.2,0,11.3,5.1,11.3,11.3
-                                                        C124,94.7,122.9,98,121.2,101.2z"/>
-                                                </g>
-                                            </svg>
-                                        </a>
+        <?php if(!isset($errorRetrievingCustomers)): ?>
+            <div id="customersTable">
+                <div class="table-responsive">
+                    <table class="table table-sm table-dark table-striped table-borderless table-hover text-center rounded">
+                        <thead>
+                            <th>Customer ID</th>
+                            <th>Customer Name</th>
+                            <th>Actions</th>
+                            <th>Hour Total</th>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($customers as $key => $customer): ?>
+                                <tr>
+                                    <td><?php echo $customer['customer_id'] ?></td>
+                                    <td><?php echo $customer['customer_name'] ?></td>
+                                    <td>
+                                        <div class="d-flex justify-content-around align-items-center">
+                                            <a href="index.php?addWork=<?php echo $customer['customer_id'] ?>" class="addWorkButton">
+                                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="32" width="32" x="0px" y="0px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+                                                    <g>
+                                                        <rect x="76" y="14.9" fill="#F5F0E1" width="48" height="6.4"/>
+                                                        <path fill="#D66194" d="M112.7,80.3c-4.1,0-7.9,2.2-9.9,5.8c-0.6,1-1.6,1.6-2.8,1.6c-1.2,0-2.2-0.6-2.8-1.6c-2-3.6-5.8-5.8-9.9-5.8
+                                                            c-6.2,0-11.3,5.1-11.3,11.3c0,3.1,1.1,6.3,2.8,9.5h8c0-1.8,1.4-3.2,3.2-3.2h20.1c1.8,0,3.2,1.4,3.2,3.2l8,0
+                                                            c1.7-3.2,2.8-6.5,2.8-9.5C124,85.4,118.9,80.3,112.7,80.3z"/>
+                                                        <path fill="#A2496F" d="M110.1,104.4H89.9c-1.8,0-3.2-1.4-3.2-3.2h-8c5.2,9.8,16.5,19.4,21.2,23.2c4.7-3.8,16-13.3,21.2-23.2h-8
+                                                            C113.3,102.9,111.8,104.4,110.1,104.4z"/>
+                                                        <path fill="#D0E7DA" d="M69.6,91.6c0-9.8,7.9-17.7,17.7-17.7c4.8,0,9.4,2,12.7,5.4c3.3-3.4,7.8-5.4,12.7-5.4
+                                                            c9.8,0,17.7,7.9,17.7,17.7c0,3-0.7,6.2-2.1,9.5h7c0-1.8,1.4-3.2,3.2-3.2h39c8.9,0,16.2-7.3,16.2-16.2V43.4c0-1.6-1.3-3-3-3H9.3
+                                                            c-1.6,0-3,1.3-3,3v38.4c0,8.9,7.3,16.2,16.2,16.2h39c1.8,0,3.2,1.4,3.2,3.2l7,0C70.3,97.8,69.6,94.7,69.6,91.6z"/>
+                                                        <path fill="#ADC3B7" d="M6.4,107.4v74.7c0,1.6,1.3,3,3,3h181.3c1.6,0,3-1.3,3-3V97.5c-4.1,4.2-9.8,6.9-16.2,6.9h-39
+                                                            c-1.8,0-3.2-1.4-3.2-3.2h-7c-2.1,4.9-5.7,10.2-10.8,15.7c-6.5,7.1-13.6,12.6-15.6,14.1c-0.6,0.4-1.2,0.6-1.9,0.6s-1.3-0.2-1.9-0.6
+                                                            c-2-1.5-9.1-7-15.6-14.1c-5.1-5.6-8.7-10.8-10.8-15.7h-7c0,1.8-1.4,3.2-3.2,3.2h-39c-8.2,0-15.4-4.4-19.4-11v10.9
+                                                            C5,104.2,6.4,105.7,6.4,107.4z"/>
+                                                        <path fill="#422938" d="M89.9,104.4h20.1c1.8,0,3.2-1.4,3.2-3.2c0-1.8-1.4-3.2-3.2-3.2H89.9c-1.8,0-3.2,1.4-3.2,3.2
+                                                            C86.7,102.9,88.2,104.4,89.9,104.4z"/>
+                                                        <path fill="#422938" d="M190.7,34.1h-60.3V11.7c0-1.8-1.4-3.2-3.2-3.2H72.8c-1.8,0-3.2,1.4-3.2,3.2v22.3H9.3
+                                                            c-5.1,0-9.3,4.2-9.3,9.3v38.4C0,86,1.2,90,3.2,93.3c3.9,6.6,11.2,11,19.4,11h39c1.8,0,3.2-1.4,3.2-3.2c0-1.8-1.4-3.2-3.2-3.2h-39
+                                                            c-8.9,0-16.2-7.3-16.2-16.2V43.4c0-1.6,1.3-3,3-3h181.3c1.6,0,3,1.3,3,3v38.4c0,8.9-7.3,16.2-16.2,16.2h-39c-1.8,0-3.2,1.4-3.2,3.2
+                                                            c0,1.8,1.4,3.2,3.2,3.2h39c6.3,0,12.1-2.6,16.2-6.9v84.6c0,1.6-1.3,3-3,3H9.3c-1.6,0-3-1.3-3-3v-74.7c0-1.8-1.4-3.2-3.2-3.2
+                                                            c-1.8,0-3.2,1.4-3.2,3.2v74.7c0,5.1,4.2,9.3,9.3,9.3h181.3c5.1,0,9.3-4.2,9.3-9.3V43.4C200,38.3,195.8,34.1,190.7,34.1z M124,21.3
+                                                            H76v-6.4h48V21.3z M76,27.7h48v6.4H76V27.7z"/>
+                                                        <path fill="#422938" d="M112.7,73.9c-4.8,0-9.4,2-12.7,5.4c-3.3-3.4-7.8-5.4-12.7-5.4c-9.8,0-17.7,7.9-17.7,17.7
+                                                            c0,3,0.7,6.2,2.1,9.5c2.1,4.9,5.7,10.2,10.8,15.7C89,124,96.1,129.4,98.1,131c0.6,0.4,1.2,0.6,1.9,0.6s1.3-0.2,1.9-0.6
+                                                            c2-1.5,9.1-7,15.6-14.1c5.1-5.6,8.7-10.8,10.8-15.7c1.4-3.3,2.1-6.5,2.1-9.5C130.4,81.9,122.4,73.9,112.7,73.9z M121.2,101.2
+                                                            c-5.2,9.8-16.5,19.4-21.2,23.2c-4.7-3.8-16-13.3-21.2-23.2C77.1,98,76,94.7,76,91.6c0-6.2,5.1-11.3,11.3-11.3
+                                                            c4.1,0,7.9,2.2,9.9,5.8c0.6,1,1.6,1.6,2.8,1.6c1.2,0,2.2-0.6,2.8-1.6c2-3.6,5.8-5.8,9.9-5.8c6.2,0,11.3,5.1,11.3,11.3
+                                                            C124,94.7,122.9,98,121.2,101.2z"/>
+                                                    </g>
+                                                </svg>
+                                            </a>
 
-                                        <a href="index.php?worklist=<?php echo $customer['customer_id'] ?>" class="worklistButton">
-                                            <svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 25 25" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
-                                                <g transform="translate(0 -1028.4)">
-                                                <path d="m3 1035.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#16a085"/>
-                                                <path d="m3 1034.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#ecf0f1"/>
-                                                <path d="m3 1033.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#bdc3c7"/>
-                                                <path d="m3 1032.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#ecf0f1"/>
-                                                <path d="m5 1028.4c-1.1046 0-2 0.9-2 2v1 4 2 1 3 1 5 1c0 1.1 0.8954 2 2 2h2v-1h-1.5c-0.8284 0-1.5-0.7-1.5-1.5 0-0.9 0.6716-1.5 1.5-1.5h12.5 1c1.105 0 2-0.9 2-2v-1-5-4-3-1c0-1.1-0.895-2-2-2h-4-10z" fill="#16a085"/>
-                                                <path d="m8 1028.4v18h1 9 1c1.105 0 2-0.9 2-2v-1-5-4-3-1c0-1.1-0.895-2-2-2h-4-6-1z" fill="#1abc9c"/>
-                                                <path d="m7 1048.4v2 2l2.5-2 2.5 2v-2-2h-5z" fill="#e74c3c"/>
-                                                <rect height="1" width="5" y="1047.4" x="7" fill="#c0392b"/>
-                                                </g>
-                                            </svg>
-                                        </a>
-                                            
-                                        <a href="index.php?customerReport=<?php echo $customer['customer_id'] ?>&customer=<?php echo $customer['customer_name'] ?>" class="customerReportButton">
-                                            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 128 128">
-                                                <defs><style>.cls-1{fill:#2d3e50;}.cls-2{fill:#2e79bd;}</style></defs>
-                                                <title>b</title>
-                                                <path class="cls-1" d="M28.628,72.11907A17.97418,17.97418,0,0,1,6.59139,80.13388v38.54969a2.49475,2.49475,0,0,0,2.49111,2.49111H26.35031a2.49477,2.49477,0,0,0,2.49109-2.49111v-46.51A.11355.11355,0,0,0,28.628,72.11907Z"/>
-                                                <path class="cls-1" d="M46.2281,42.16451,37.447,51.07585v67.60772a2.49475,2.49475,0,0,0,2.49111,2.49111H57.20588a2.49477,2.49477,0,0,0,2.49111-2.49111v-72.822L55.99432,42.156A18.13389,18.13389,0,0,1,46.2281,42.16451Z"/>
-                                                <path class="cls-1" d="M68.30258,67.084v51.59962a2.49474,2.49474,0,0,0,2.49109,2.49111H88.06148a2.49477,2.49477,0,0,0,2.49111-2.49111V68.02379a17.94923,17.94923,0,0,1-22.25-.93984Z"/>
-                                                <path class="cls-1" d="M110.14729,35.7358,99.15817,46.72493v71.95864a2.49474,2.49474,0,0,0,2.49109,2.49111h17.26781a2.49477,2.49477,0,0,0,2.49111-2.49111v-83.429a17.95629,17.95629,0,0,1-11.26088.48124Z"/>
-                                                <path class="cls-2" d="M115.045,6.82533a11.60217,11.60217,0,0,0-9.725,17.94326l-18.96395,18.964a11.5781,11.5781,0,0,0-12.86295.13029L60.81946,31.18721a11.61122,11.61122,0,1,0-19.45139-.00064L19.28566,53.59035A11.62772,11.62772,0,1,0,22.67974,56.984l22.082-22.40314a11.572,11.572,0,0,0,12.6643,0L70.16978,47.32633a11.61164,11.61164,0,1,0,19.58-.1997l18.9646-18.9646A11.60839,11.60839,0,1,0,115.045,6.82533Z"/>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                    
-                                </td>
-                                <?php if(isset($customer['customer_remaining_minutes'])): ?>
-                                    <td><?php echo round($customer['customer_remaining_minutes']/60, 2) ?></td>
-                                <?php else: ?>
-                                    <td>-</td>
-                                <?php endif; ?>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                                            <a href="index.php?worklist=<?php echo $customer['customer_id'] ?>" class="worklistButton">
+                                                <svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 25 25" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+                                                    <g transform="translate(0 -1028.4)">
+                                                    <path d="m3 1035.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#16a085"/>
+                                                    <path d="m3 1034.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#ecf0f1"/>
+                                                    <path d="m3 1033.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#bdc3c7"/>
+                                                    <path d="m3 1032.4v2 1 3 1 5 1c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-1-5-4-3h-18z" fill="#ecf0f1"/>
+                                                    <path d="m5 1028.4c-1.1046 0-2 0.9-2 2v1 4 2 1 3 1 5 1c0 1.1 0.8954 2 2 2h2v-1h-1.5c-0.8284 0-1.5-0.7-1.5-1.5 0-0.9 0.6716-1.5 1.5-1.5h12.5 1c1.105 0 2-0.9 2-2v-1-5-4-3-1c0-1.1-0.895-2-2-2h-4-10z" fill="#16a085"/>
+                                                    <path d="m8 1028.4v18h1 9 1c1.105 0 2-0.9 2-2v-1-5-4-3-1c0-1.1-0.895-2-2-2h-4-6-1z" fill="#1abc9c"/>
+                                                    <path d="m7 1048.4v2 2l2.5-2 2.5 2v-2-2h-5z" fill="#e74c3c"/>
+                                                    <rect height="1" width="5" y="1047.4" x="7" fill="#c0392b"/>
+                                                    </g>
+                                                </svg>
+                                            </a>
+                                                
+                                            <a href="index.php?customerReport=<?php echo $customer['customer_id'] ?>&customer=<?php echo $customer['customer_name'] ?>" class="customerReportButton">
+                                                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 128 128">
+                                                    <defs><style>.cls-1{fill:#2d3e50;}.cls-2{fill:#2e79bd;}</style></defs>
+                                                    <title>b</title>
+                                                    <path class="cls-1" d="M28.628,72.11907A17.97418,17.97418,0,0,1,6.59139,80.13388v38.54969a2.49475,2.49475,0,0,0,2.49111,2.49111H26.35031a2.49477,2.49477,0,0,0,2.49109-2.49111v-46.51A.11355.11355,0,0,0,28.628,72.11907Z"/>
+                                                    <path class="cls-1" d="M46.2281,42.16451,37.447,51.07585v67.60772a2.49475,2.49475,0,0,0,2.49111,2.49111H57.20588a2.49477,2.49477,0,0,0,2.49111-2.49111v-72.822L55.99432,42.156A18.13389,18.13389,0,0,1,46.2281,42.16451Z"/>
+                                                    <path class="cls-1" d="M68.30258,67.084v51.59962a2.49474,2.49474,0,0,0,2.49109,2.49111H88.06148a2.49477,2.49477,0,0,0,2.49111-2.49111V68.02379a17.94923,17.94923,0,0,1-22.25-.93984Z"/>
+                                                    <path class="cls-1" d="M110.14729,35.7358,99.15817,46.72493v71.95864a2.49474,2.49474,0,0,0,2.49109,2.49111h17.26781a2.49477,2.49477,0,0,0,2.49111-2.49111v-83.429a17.95629,17.95629,0,0,1-11.26088.48124Z"/>
+                                                    <path class="cls-2" d="M115.045,6.82533a11.60217,11.60217,0,0,0-9.725,17.94326l-18.96395,18.964a11.5781,11.5781,0,0,0-12.86295.13029L60.81946,31.18721a11.61122,11.61122,0,1,0-19.45139-.00064L19.28566,53.59035A11.62772,11.62772,0,1,0,22.67974,56.984l22.082-22.40314a11.572,11.572,0,0,0,12.6643,0L70.16978,47.32633a11.61164,11.61164,0,1,0,19.58-.1997l18.9646-18.9646A11.60839,11.60839,0,1,0,115.045,6.82533Z"/>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                        
+                                    </td>
+                                    <?php if(isset($customer['customer_remaining_minutes'])): ?>
+                                        <td><?php echo round($customer['customer_remaining_minutes']/60, 2) ?></td>
+                                    <?php else: ?>
+                                        <td>-</td>
+                                    <?php endif; ?>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
             <!-- BUTTONS -->
             <div class="row mt-4">
                 <div class="col-4 text-center">
@@ -136,8 +143,13 @@
                     </form>
                 </div>
             </div>
-            
-        </div>
+            <?php else:?>
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <button id="newCustomerButton" class="btn btn-sm btn-outline-primary" >Add New Customer</button>
+                    </div>
+                </div>
+        <?php endif; ?> 
 
         <!-- ADD NEW CUSTOMER FORM -->
         <div id="addNewCustomerDiv" class="d-none">
@@ -165,7 +177,10 @@
             </div>
         </div>
         
-        <?php if(isset($_GET['addWork'])): ?>
+        <?php if(isset($_GET['addWork']) && !isset($error)): ?>
+            <?php if(isset($nothingInWorklist)): ?>
+                <div class="alert alert-warning" role="alert">ADD A WORK TO WORKLIST</div>
+            <?php endif; ?>
             <!-- ADD WORK FORM -->
             <div id="addWorkForm">
                 <div class="row d-flex mt-4">
@@ -209,100 +224,108 @@
         <?php endif; ?> 
         
         <?php if(isset($_GET['worklist'])): ?>
-            <!-- TABLE OF WORKLIST-->
-            <?php
-                $totals_hours = 0; 
-                $totals_worked = 0; 
-                $totals_available = 0;
+            <?php if(!isset($error)): ?>
+                <?php
+                    $totals_hours = 0; 
+                    $totals_worked = 0; 
+                    $totals_available = 0;
 
-                $totals_active_hours = 0; 
-                $totals_active_worked = 0; 
-                $totals_active_available = 0;
-            ?>
+                    $totals_active_hours = 0; 
+                    $totals_active_worked = 0; 
+                    $totals_active_available = 0;
+                ?>
+                
+                <!-- TABLE OF WORKLIST-->
+                <div class="w-auto d-flex flex-column justify-content-center my-5">
+                    <div class="d-flex justify-content-center">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-dark table-striped table-borderless table-hover text-center rounded">
+                                <thead>
+                                    <th>Worklist ID</th>
+                                    <th>Worklist Name</th>
+                                    <th>Total Hours</th>
+                                    <th>Worked Hours</th>
+                                    <th>Available Hours</th>
+                                    <th>Active (Y/N)</th>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($worklists as $key => $worklist): ?>
+                                        <tr>
+                                            <td><?php echo $worklist['worklist_id'] ?></td>
+                                            <td><?php echo $worklist['worklist_name'] ?></td>
+                                            <td><?php echo round($worklist['worklist_total_minutes']/60, 2) ?></td>
+                                            <?php if(isset($worklist['worklist_worked_minutes'])): ?>
+                                                <td><?php echo round($worklist['worklist_worked_minutes']/60, 2) ?></td>
+                                                <td><?php echo round($worklist['worklist_remaining_minutes']/60, 2) ?></td>
+                                                <?php else:?>
+                                                <td colspan="2" class="text-warming">Add Work</td>
+                                            <?php endif;?>
 
-            <div class="w-auto d-flex flex-column justify-content-center my-5">
-                <div class="d-flex justify-content-center">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-dark table-striped table-borderless table-hover text-center rounded">
-                            <thead>
-                                <th>Worklist ID</th>
-                                <th>Worklist Name</th>
-                                <th>Total Hours</th>
-                                <th>Worked Hours</th>
-                                <th>Available Hours</th>
-                                <th>Active (Y/N)</th>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($worklists as $key => $worklist): ?>
-                                    <tr>
-                                        <td><?php echo $worklist['worklist_id'] ?></td>
-                                        <td><?php echo $worklist['worklist_name'] ?></td>
-                                        <td><?php echo round($worklist['worklist_total_minutes']/60, 2) ?></td>
-                                        <?php if(isset($worklist['worklist_worked_minutes'])): ?>
-                                            <td><?php echo round($worklist['worklist_worked_minutes']/60, 2) ?></td>
-                                            <td><?php echo round($worklist['worklist_remaining_minutes']/60, 2) ?></td>
-                                            <?php else:?>
-                                            <td colspan="2" class="text-warming">Add Work</td>
-                                        <?php endif;?>
-
-                                        <?php
-                                            $totals_hours += $worklist['worklist_total_minutes']; 
-                                            $totals_worked += $worklist['worklist_worked_minutes']; 
-                                            $totals_available += $worklist['worklist_remaining_minutes'];
-                                            
-                                            if($worklist['worklist_active'] == 1){
-                                                $totals_active_hours += $worklist['worklist_total_minutes']; 
-                                                $totals_active_worked += $worklist['worklist_worked_minutes']; 
-                                                $totals_active_available += $worklist['worklist_remaining_minutes'];
-                                            }
-                                        ?>
-
-                                        <td>
-                                            <form action="process.php" method="POST" class="changeActiveStatusFrom">
-                                                <input type="hidden" value="<?php echo $worklist['worklist_name'] ?>" name="worklist_name">
-                                                <input type="hidden" value="<?php echo $customer_id ?>" name="customer_id">
+                                            <?php
+                                                $totals_hours += $worklist['worklist_total_minutes']; 
+                                                $totals_worked += $worklist['worklist_worked_minutes']; 
+                                                $totals_available += $worklist['worklist_remaining_minutes'];
                                                 
-                                                <button type="submit" class="btn" name="changeActiveStatus">
-                                                    <?php if($worklist['worklist_active'] == 1): ?>
-                                                        <input type="hidden" value="0" name="activeNewStatus">
-                                                        <label class="switch">
-                                                            <input type="checkbox" checked>
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                        <?php else:?>
-                                                            <input type="hidden" value="1" name="activeNewStatus">
+                                                if($worklist['worklist_active'] == 1){
+                                                    $totals_active_hours += $worklist['worklist_total_minutes']; 
+                                                    $totals_active_worked += $worklist['worklist_worked_minutes']; 
+                                                    $totals_active_available += $worklist['worklist_remaining_minutes'];
+                                                }
+                                            ?>
+
+                                            <td>
+                                                <form action="process.php" method="POST" class="changeActiveStatusFrom">
+                                                    <input type="hidden" value="<?php echo $worklist['worklist_name'] ?>" name="worklist_name">
+                                                    <input type="hidden" value="<?php echo $customer_id ?>" name="customer_id">
+                                                    
+                                                    <button type="submit" class="btn" name="changeActiveStatus">
+                                                        <?php if($worklist['worklist_active'] == 1): ?>
+                                                            <input type="hidden" value="0" name="activeNewStatus">
                                                             <label class="switch">
-                                                                <input type="checkbox">
+                                                                <input type="checkbox" checked>
                                                                 <span class="slider round"></span>
                                                             </label>
-                                                    <?php endif; ?>
-                                                </button>
-                                            </form>
-                                        </td>
+                                                            <?php else:?>
+                                                                <input type="hidden" value="1" name="activeNewStatus">
+                                                                <label class="switch">
+                                                                    <input type="checkbox">
+                                                                    <span class="slider round"></span>
+                                                                </label>
+                                                        <?php endif; ?>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+
+                                    <tr>
+                                        <td colspan="2">TOTALS</td>
+                                        <td><?php echo round($totals_hours/60, 2); ?></td>
+                                        <td><?php echo round($totals_worked/60, 2); ?></td>
+                                        <td><?php echo round($totals_available/60, 2); ?></td>
+                                        <td>ALL</td>
                                     </tr>
-                                <?php endforeach; ?>
+                                    <tr>
+                                        <td colspan="2">TOTALS ACTIVE</td>
+                                        <td><?php echo round($totals_active_hours/60, 2); ?></td>
+                                        <td><?php echo round($totals_active_worked/60, 2); ?></td>
+                                        <td><?php echo round($totals_active_available/60, 2); ?></td>
+                                        <td>ACTIVE</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> 
+                </div>
+            <?php endif; ?>
 
-                                <tr>
-                                    <td colspan="2">TOTALS</td>
-                                    <td><?php echo round($totals_hours/60, 2); ?></td>
-                                    <td><?php echo round($totals_worked/60, 2); ?></td>
-                                    <td><?php echo round($totals_available/60, 2); ?></td>
-                                    <td>ALL</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">TOTALS ACTIVE</td>
-                                    <td><?php echo round($totals_active_hours/60, 2); ?></td>
-                                    <td><?php echo round($totals_active_worked/60, 2); ?></td>
-                                    <td><?php echo round($totals_active_available/60, 2); ?></td>
-                                    <td>ACTIVE</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div> 
-
+                <!-- ADD A WORK TO WORKLIST BUTTON -->
                 <div class="d-flex justify-content-center mt-4">
-                    <button class="btn btn-sm btn-outline-success" id="addWorkButton">Add To Worklist</button>
+                    <?php if(isset($error)): ?>
+                        <button class="btn btn-sm btn-outline-danger" id="addWorkButton">Add To Worklist</button>
+                    <?php else:?>
+                        <button class="btn btn-sm btn-outline-success" id="addWorkButton">Add To Worklist</button>
+                    <?php endif; ?>
                 </div>
 
                 <!-- ADD TO WORKLIST FORM -->
@@ -340,10 +363,10 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            
         <?php endif; ?>  
         
-        <?php if(isset($_GET['customerReport'])): ?>
+        <?php if(isset($_GET['customerReport']) && !isset($error)): ?>
             <!-- CUSTOMER REPORT -->
             <?php
                 $customer_id = $_GET['customerReport'];
@@ -351,110 +374,109 @@
                 $total_worked_hours = 0;
             ?>
 
-                <?php 
-                    if(isset($_GET['date_from']) && $_GET['date_from'] !== ""){
-                        $date_from = $_GET['date_from'];
-                    } else if(!isset($_GET['date_from'])){
-                        $currentMonth = date('m');
-                        $currentYear = date('Y');
-                        $date_from = "$currentYear-$currentMonth-01";
-                    } else {
-                        $date_from = "0000-00-00";
-                    }
+            <?php 
+                if(isset($_GET['date_from']) && $_GET['date_from'] !== ""){
+                    $date_from = $_GET['date_from'];
+                } else if(!isset($_GET['date_from'])){
+                    $currentMonth = date('m');
+                    $currentYear = date('Y');
+                    $date_from = "$currentYear-$currentMonth-01";
+                } else {
+                    $date_from = "0000-00-00";
+                }
 
-                    if(isset($_GET['date_to']) && $_GET['date_to'] !== "" ){
-                        $date_to = $_GET['date_to'];
-                    } else {
-                        $date_to = date('Y-m-d');
-                    }
+                if(isset($_GET['date_to']) && $_GET['date_to'] !== "" ){
+                    $date_to = $_GET['date_to'];
+                } else {
+                    $date_to = date('Y-m-d');
+                }
 
-                    if(isset($_GET['worklist_name']) && $_GET['worklist_name'] !== ""){
-                        $worklist_name = $_GET['worklist_name'];
-                    } else {
-                        $worklist_name = 'All works';
-                    }
-                ?>
+                if(isset($_GET['worklist_name']) && $_GET['worklist_name'] !== ""){
+                    $worklist_name = $_GET['worklist_name'];
+                } else {
+                    $worklist_name = 'All works';
+                }
+            ?>
 
-                <div class="row mt-4">
-                    <div class="col-12 col-md-3 col-xl-2 d-flex justify-content-center align-items-center">
-                        <h4 class="m-0"><?php echo $customer_name ?></h4>
-                    </div>
-                    <div class="col-12 col-md-9 col-xl-10">
-                        <form action="index.php" method="GET" class="filteringForm">
-                            <div class="row">
-                                <input type="hidden" value="<?php echo $customer_id?>" name="customerReport">
-                                <input type="hidden" value="<?php echo $customer_name?>" name="customer">
-                                <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
-                                    <input type="date" class="rounded" value="<?php echo $date_from ?>" name="date_from">
-                                </div>
-                                <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
-                                    <input type="date" class="rounded" value="<?php echo $date_to ?>" name="date_to">
-                                </div>
-                                <div class="col-8 col-xl-4 d-flex mt-2">
-                                    <select name="worklist_name" class="w-100 rounded">
-                                        <option value="<?php echo 'All works' ?>">All works</option>
-                                        <?php foreach ($works as $key => $work): ?>
-                                            <?php if($work['worklist_active'] == 1): ?>
-                                                <option value="<?php echo $work['worklist_name'] ?>">
-                                                    <?php echo $work['worklist_name'] ?>
-                                                </option>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="col-4 col-xl-2 d-flex mt-2">
-                                    <button type="submit" class="btn p-0">
-                                        <svg viewBox="0 -26 512 512" xmlns="http://www.w3.org/2000/svg" height="40" width="40">
-                                            <path d="m56 70 160 200v180l6.878906-1.148438c16.492188-2.75 31.660156-9.703124 44.269532-19.839843 12.613281-10.152344 22.640624-23.492188 28.851562-39.011719v-120l160-200zm0 0" fill="#e87288"/>
-                                            <path d="m502 10v20c0 22.089844-17.910156 40-40 40-51.355469 0-350.152344 0-416.171875 0-19.789063 0-35.828125-16.039062-35.828125-35.828125v-24.171875zm0 0" fill="#fafaff"/>
-                                            <path d="m376 120c5.519531 0 10-4.480469 10-10s-4.480469-10-10-10-10 4.480469-10 10 4.480469 10 10 10zm0 0"/>
-                                            <path d="m502 0h-492c-5.523438 0-10 4.476562-10 10v24.171875c0 25.269531 20.558594 45.828125 45.828125 45.828125h5.367187l154.804688 193.507812v176.492188c0 6.1875 5.5625 10.882812 11.648438 9.863281l6.875-1.148437c17.867187-2.980469 34.773437-10.558594 48.898437-21.914063 20.832031-16.769531 32.578125-40.902343 32.578125-46.800781v-116.492188l154.804688-193.507812h1.195312c27.570312 0 50-22.429688 50-50v-20c0-5.523438-4.476562-10-10-10zm-241.117188 421.21875c-10.1875 8.191406-22.160156 13.957031-34.882812 16.832031v-158.050781h60v108.019531c-5.507812 12.933594-14.164062 24.382813-25.117188 33.199219zm30.308594-161.21875h-70.386718l-144-180h358.386718zm200.808594-230c0 16.542969-13.457031 30-30 30h-416.171875c-14.242187 0-25.828125-11.585938-25.828125-25.828125v-14.171875h472zm0 0"/>
-                                            <path d="m270.519531 237.808594c4.304688 3.441406 10.597657 2.761718 14.058594-1.5625l72.339844-90.410156c3.449219-4.3125 2.753906-10.605469-1.558594-14.054688s-10.605469-2.753906-14.058594 1.558594l-72.339843 90.410156c-3.449219 4.3125-2.75 10.605469 1.558593 14.058594zm0 0"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+            <div class="row mt-4">
+                <div class="col-12 col-md-3 col-xl-2 d-flex justify-content-center align-items-center">
+                    <h4 class="m-0"><?php echo $customer_name ?></h4>
                 </div>
-
-                <div class="w-auto d-flex flex-column justify-content-center my-3">
-                    <div class="d-flex justify-content-center">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-dark table-striped table-borderless table-hover text-center rounded">
-                                <thead>
-                                    <th>Work Name</th>
-                                    <th>Date</th>
-                                    <th>Worked Hours</th>
-                                    <th>Actions</th>
-                                </thead>
-
-                                <tbody>
+                <div class="col-12 col-md-9 col-xl-10">
+                    <form action="index.php" method="GET" class="filteringForm">
+                        <div class="row">
+                            <input type="hidden" value="<?php echo $customer_id?>" name="customerReport">
+                            <input type="hidden" value="<?php echo $customer_name?>" name="customer">
+                            <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
+                                <input type="date" class="rounded" value="<?php echo $date_from ?>" name="date_from">
+                            </div>
+                            <div class="col-6 col-md-6 col-xl-3 d-flex mt-2">
+                                <input type="date" class="rounded" value="<?php echo $date_to ?>" name="date_to">
+                            </div>
+                            <div class="col-8 col-xl-4 d-flex mt-2">
+                                <select name="worklist_name" class="w-100 rounded">
+                                    <option value="<?php echo 'All works' ?>">All works</option>
                                     <?php foreach ($works as $key => $work): ?>
                                         <?php if($work['worklist_active'] == 1): ?>
-                                            <?php if(isset($worklist_name) && $worklist_name !== 'All works'): ?>
-                                                <?php if($work['worklist_name'] == $worklist_name): ?>
-                                                    <?php printTableData($work, $worklist_name, $date_from, $date_to, $total_worked_hours); ?> 
-                                                <?php endif; ?>
-                                            <?php else: ?>
-                                                <?php printTableData($work, $worklist_name, $date_from, $date_to, $total_worked_hours); ?> 
-                                            <?php endif; ?>
+                                            <option value="<?php echo $work['worklist_name'] ?>">
+                                                <?php echo $work['worklist_name'] ?>
+                                            </option>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
-                                    <tr>
-                                        <td colspan="2">Total Worked Hours</td>
-                                        <td colspan="2"><?php echo round($total_worked_hours/60, 2).' hours'; ?></td>
-                                    </tr>
-                                </tbody>
-
-                            </table>
+                                </select>
+                            </div>
+                            <div class="col-4 col-xl-2 d-flex mt-2">
+                                <button type="submit" class="btn p-0">
+                                    <svg viewBox="0 -26 512 512" xmlns="http://www.w3.org/2000/svg" height="40" width="40">
+                                        <path d="m56 70 160 200v180l6.878906-1.148438c16.492188-2.75 31.660156-9.703124 44.269532-19.839843 12.613281-10.152344 22.640624-23.492188 28.851562-39.011719v-120l160-200zm0 0" fill="#e87288"/>
+                                        <path d="m502 10v20c0 22.089844-17.910156 40-40 40-51.355469 0-350.152344 0-416.171875 0-19.789063 0-35.828125-16.039062-35.828125-35.828125v-24.171875zm0 0" fill="#fafaff"/>
+                                        <path d="m376 120c5.519531 0 10-4.480469 10-10s-4.480469-10-10-10-10 4.480469-10 10 4.480469 10 10 10zm0 0"/>
+                                        <path d="m502 0h-492c-5.523438 0-10 4.476562-10 10v24.171875c0 25.269531 20.558594 45.828125 45.828125 45.828125h5.367187l154.804688 193.507812v176.492188c0 6.1875 5.5625 10.882812 11.648438 9.863281l6.875-1.148437c17.867187-2.980469 34.773437-10.558594 48.898437-21.914063 20.832031-16.769531 32.578125-40.902343 32.578125-46.800781v-116.492188l154.804688-193.507812h1.195312c27.570312 0 50-22.429688 50-50v-20c0-5.523438-4.476562-10-10-10zm-241.117188 421.21875c-10.1875 8.191406-22.160156 13.957031-34.882812 16.832031v-158.050781h60v108.019531c-5.507812 12.933594-14.164062 24.382813-25.117188 33.199219zm30.308594-161.21875h-70.386718l-144-180h358.386718zm200.808594-230c0 16.542969-13.457031 30-30 30h-416.171875c-14.242187 0-25.828125-11.585938-25.828125-25.828125v-14.171875h472zm0 0"/>
+                                        <path d="m270.519531 237.808594c4.304688 3.441406 10.597657 2.761718 14.058594-1.5625l72.339844-90.410156c3.449219-4.3125 2.753906-10.605469-1.558594-14.054688s-10.605469-2.753906-14.058594 1.558594l-72.339843 90.410156c-3.449219 4.3125-2.75 10.605469 1.558593 14.058594zm0 0"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                    </div> 
+                    </form>
                 </div>
-            
+            </div>
+
+            <div class="w-auto d-flex flex-column justify-content-center my-3">
+                <div class="d-flex justify-content-center">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-dark table-striped table-borderless table-hover text-center rounded">
+                            <thead>
+                                <th>Work Name</th>
+                                <th>Date</th>
+                                <th>Worked Hours</th>
+                                <th>Actions</th>
+                            </thead>
+
+                            <tbody>
+                                <?php foreach ($works as $key => $work): ?>
+                                    <?php if($work['worklist_active'] == 1): ?>
+                                        <?php if(isset($worklist_name) && $worklist_name !== 'All works'): ?>
+                                            <?php if($work['worklist_name'] == $worklist_name): ?>
+                                                <?php printTableData($work, $worklist_name, $date_from, $date_to, $total_worked_hours); ?> 
+                                            <?php endif; ?>
+                                        <?php else: ?>
+                                            <?php printTableData($work, $worklist_name, $date_from, $date_to, $total_worked_hours); ?> 
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                                <tr>
+                                    <td colspan="2">Total Worked Hours</td>
+                                    <td colspan="2"><?php echo round($total_worked_hours/60, 2).' hours'; ?></td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div> 
+            </div>
         <?php endif;?>
 
-        <?php if(isset($_GET['allCustomersReport'])): ?>
+        <?php if(isset($_GET['allCustomersReport']) && !isset($error)): ?>
             <!-- ALL CUSTOMER REPORT -->
             <?php
                 $total_worked_hours = 0;

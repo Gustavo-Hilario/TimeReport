@@ -9,8 +9,12 @@
         while($row = $result->fetch_assoc()) {
             $customers[] = $row;
         }
-        if(!$customers) exit('No rows');
-        var_export($customers, true);
+        if(isset($customers)){
+            var_export($customers, true);
+        } else {
+            $response = [$customers=[], $errorRetrievingCustomers=true, $error=true, $message='Customers not found. Add a new customer!'];
+            var_export($response, true);
+        }
         $stmt->close();
 
     if(isset($_POST['saveNewCustomer'])){
@@ -33,8 +37,12 @@
         while($row = $result->fetch_assoc()) {
             $worklists[] = $row;
         }
-        if(!$worklists) exit('No rows');
-        var_export($worklists, true);
+        if(isset($worklists)){
+            var_export($worklists, true);
+        } else {
+            $response = [$worklists=[], $error=true, $message='Worklist not found. Add work to worklist first in the next action!'];
+            var_export($response, true);
+        }
         $stmt->close();
     }
 
@@ -74,8 +82,12 @@
         while($row = $result->fetch_assoc()) {
             $worklists[] = $row;
         }
-        if(!$worklists) exit('No rows');
-        var_export($worklists, true);
+        if(isset($worklists)){
+            var_export($worklists, true);
+        } else {
+            $response = [$worklists=[], $error=true, $message='Worklist not found. Add work to worklist here!'];
+            var_export($response, true);
+        }
         $stmt->close();
     }
 
@@ -101,7 +113,12 @@
         while($row = $result->fetch_assoc()) {
             $works[] = $row;
         }
-        if(!$works) exit('No rows');
+        if(isset($works)){
+            var_export($works, true);
+        } else {
+            $response = [$works=[], $error=true, $message='Worklist not found. Add work to worklist first in the previous action!'];
+            var_export($response, true);
+        }
         var_export($works, true);
         $stmt->close();
     }
@@ -114,7 +131,12 @@
         while($row = $result->fetch_assoc()) {
             $works[] = $row;
         }
-        if(!$works) exit('No rows');
+        if(isset($works)){
+            var_export($works, true);
+        } else {
+            $response = [$works=[], $error=true, $message='Worklist not found. Add work to worklist first!'];
+            var_export($response, true);
+        }
         var_export($works, true);
         $stmt->close();
     }
